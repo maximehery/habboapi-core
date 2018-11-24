@@ -1,0 +1,1 @@
+export declare type IPermission = 'catalog' | 'catalogPatch' | 'catalogPut' | 'catalogDelete' | 'chatlog' | 'chatlogDelete' | 'chatlogBackup' | 'item' | 'itemPatch' | 'itemPut' | 'itemPatch' | 'itemDelete' | 'group' | 'room' | 'user' | 'userPatch' | 'userPut' | 'userDelete';

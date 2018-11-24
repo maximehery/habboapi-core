@@ -1,0 +1,30 @@
+import { ItemEntity } from '../../item/entities/item.entity';
+import { CatalogItemEntity } from '../../catalog/entities/catalogItem.entity';
+export declare class ItemBaseEntity {
+    id: number;
+    itemName: string;
+    publicName: string;
+    type: 's' | 'i' | 'e' | 'h' | 'v' | 'r' | 'b' | 'p';
+    width: number;
+    length: number;
+    stackHeight: number;
+    allowStack: '0' | '1';
+    allowSit: '0' | '1';
+    allowLay: '0' | '1';
+    allowWalk: '0' | '1';
+    spriteId: number;
+    allowRecycle: '0' | '1';
+    allowTrade: '0' | '1';
+    allowMarketplaceSell: '0' | '1';
+    allowGift: '0' | '1';
+    allowInventoryStack: '0' | '1';
+    interactionType: string;
+    interactionModesCount: number;
+    vendingIds: string;
+    multiHeight: string;
+    effectIdMale: number;
+    effectIdFemale: number;
+    customParams: string;
+    baseItems?: ItemEntity[];
+    baseCatalogItems?: CatalogItemEntity[];
+}

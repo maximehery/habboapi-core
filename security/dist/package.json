@@ -1,0 +1,32 @@
+{
+  "name": "@habboapi/security",
+  "version": "1.1.2",
+  "author": "Billsonnn",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/billsonnn/habboapi-core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/billsonnn/habboapi-core/issues"
+  },
+  "homepage": "https://github.com/billsonnn/habboapi-core",
+  "peerDependencies": {
+    "@habboapi/common": "^1.1.0",
+    "@habboapi/emulator": "^1.1.0",
+    "@habboapi/habbo": "^1.1.0",
+    "@nestjs/common": "^5.4.0",
+    "@nestjs/core": "^5.4.0",
+    "@nestjs/typeorm": "^5.2.0",
+    "rxjs": "^6.3.0",
+    "typeorm": "0.2.8",
+    "reflect-metadata": "^0.1.0"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^8.4.0"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^8.3.0",
+    "@types/node": "^10.12.0",
+    "typescript": "^3.1.0"
+  }
+}
