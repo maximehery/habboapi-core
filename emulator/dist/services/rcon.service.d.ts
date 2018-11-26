@@ -7,6 +7,6 @@ export declare class RconService implements OnModuleInit {
     rconOnline: boolean;
     constructor(configService: ConfigService, logService: LogService);
     onModuleInit(): Promise<void>;
-    checkRconStatus(): Promise<boolean>;
-    sendMessage(message: IRconMessage): Promise<boolean>;
+    checkRconStatus(): Promise<any>;
+    sendMessage(message: IRconMessage): Promise<any>;
 }

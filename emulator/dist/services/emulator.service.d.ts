@@ -6,5 +6,5 @@ export declare class EmulatorService implements OnModuleInit {
     gameOnline: boolean;
     constructor(configService: ConfigService, logService: LogService);
     onModuleInit(): Promise<void>;
-    checkGameStatus(): Promise<boolean>;
+    checkGameStatus(): Promise<any>;
 }

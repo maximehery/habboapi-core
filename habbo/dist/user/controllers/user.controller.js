@@ -21,7 +21,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
-const permission_guard_1 = require("../../../security/guards/permission.guard");
 const security_1 = require("@habboapi/security");
 const user_service_1 = require("../services/user.service");
 let UserController = class UserController {
@@ -100,7 +99,7 @@ __decorate([
 ], UserController.prototype, "searchAll", null);
 UserController = __decorate([
     common_1.Controller(),
-    common_1.UseGuards(permission_guard_1.PermissionGuard),
+    common_1.UseGuards(security_1.PermissionGuard),
     __metadata("design:paramtypes", [user_service_1.UserService])
 ], UserController);
 exports.UserController = UserController;

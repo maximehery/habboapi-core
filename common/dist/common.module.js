@@ -16,6 +16,7 @@ const services_1 = require("./services");
 let CommonModule = CommonModule_1 = class CommonModule {
     constructor(connection) {
         this.connection = connection;
+        console.log(` [INITIALIZING] @habboapi/common@${process.env.npm_package_version}`);
     }
     static forRoot(configuration) {
         return {

@@ -21,7 +21,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
-const permission_guard_1 = require("../../../security/guards/permission.guard");
 const security_1 = require("@habboapi/security");
 const chatlogPrivate_service_1 = require("../services/chatlogPrivate.service");
 let ChatlogPrivateController = class ChatlogPrivateController {
@@ -142,7 +141,7 @@ __decorate([
 ], ChatlogPrivateController.prototype, "delete", null);
 ChatlogPrivateController = __decorate([
     common_1.Controller('private'),
-    common_1.UseGuards(permission_guard_1.PermissionGuard),
+    common_1.UseGuards(security_1.PermissionGuard),
     __metadata("design:paramtypes", [chatlogPrivate_service_1.ChatlogPrivateService])
 ], ChatlogPrivateController);
 exports.ChatlogPrivateController = ChatlogPrivateController;

@@ -21,7 +21,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
-const permission_guard_1 = require("../../../security/guards/permission.guard");
 const security_1 = require("@habboapi/security");
 const group_service_1 = require("../services/group.service");
 let GroupController = class GroupController {
@@ -100,7 +99,7 @@ __decorate([
 ], GroupController.prototype, "searchAll", null);
 GroupController = __decorate([
     common_1.Controller(),
-    common_1.UseGuards(permission_guard_1.PermissionGuard),
+    common_1.UseGuards(security_1.PermissionGuard),
     __metadata("design:paramtypes", [group_service_1.GroupService])
 ], GroupController);
 exports.GroupController = GroupController;

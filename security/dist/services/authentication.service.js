@@ -18,37 +18,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
-const common_2 = require("@habboapi/common");
-const habbo_1 = require("@habboapi/habbo");
 const session_service_1 = require("./session.service");
 let AuthenticationService = class AuthenticationService {
-    constructor(userService, sessionService) {
-        this.userService = userService;
+    constructor(sessionService) {
         this.sessionService = sessionService;
     }
     login(username, password) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!username || !password)
-                return Promise.reject('invalidParameters');
-            const result = yield this.userService.login(username);
-            if (!result)
-                return Promise.reject('invalidLogin');
-            if (!common_2.PasswordHelper.validatePassword(password, result.password))
-                return Promise.reject('invalidLogin');
-            const payload = {
-                id: result.id,
-                username: result.username,
-                look: result.look,
-                rank: result.rank
-            };
-            const token = this.sessionService.createToken(payload);
-            return Promise.resolve(token);
+            return '';
         });
     }
 };
 AuthenticationService = __decorate([
     common_1.Injectable(),
-    __metadata("design:paramtypes", [typeof (_a = typeof habbo_1.UserService !== "undefined" && habbo_1.UserService) === "function" && _a || Object, session_service_1.SessionService])
+    __metadata("design:paramtypes", [session_service_1.SessionService])
 ], AuthenticationService);
 exports.AuthenticationService = AuthenticationService;
-var _a;

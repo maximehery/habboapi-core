@@ -18,7 +18,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
-const tcpPortUsed = require("tcp-port-used");
+const net_1 = require("net");
 const common_2 = require("@habboapi/common");
 let EmulatorService = class EmulatorService {
     constructor(configService, logService) {
@@ -42,13 +42,21 @@ let EmulatorService = class EmulatorService {
     }
     checkGameStatus() {
         return __awaiter(this, void 0, void 0, function* () {
-            const status = yield tcpPortUsed.check(this.configService.config.emulator.port, this.configService.config.emulator.ip);
-            if (!status) {
-                this.gameOnline = false;
-                throw new Error('gameOffline');
-            }
-            this.gameOnline = true;
-            return true;
+            return new Promise((resolve, reject) => {
+                const socket = new net_1.Socket();
+                socket.connect(this.configService.config.emulator.port, this.configService.config.emulator.ip, () => {
+                    this.gameOnline = true;
+                    resolve(true);
+                });
+                socket.on('timeout', () => {
+                    this.gameOnline = false;
+                    reject(Error('gameOffline'));
+                });
+                socket.on('error', () => {
+                    this.gameOnline = false;
+                    reject(Error('gameOffline'));
+                });
+            });
         });
     }
 };

@@ -22,7 +22,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const security_1 = require("@habboapi/security");
-const security_2 = require("@habboapi/security");
 const catalogPage_service_1 = require("../services/catalogPage.service");
 let CatalogPageController = class CatalogPageController {
     constructor(catalogPageService) {
@@ -113,7 +112,7 @@ let CatalogPageController = class CatalogPageController {
 __decorate([
     common_1.Get('all/:page?/:relations?'),
     common_1.HttpCode(common_1.HttpStatus.OK),
-    security_2.Permission('catalog'),
+    security_1.Permission('catalog'),
     __param(0, common_1.Param()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -122,7 +121,7 @@ __decorate([
 __decorate([
     common_1.Get(':pageId/:relations?'),
     common_1.HttpCode(common_1.HttpStatus.OK),
-    security_2.Permission('catalog'),
+    security_1.Permission('catalog'),
     __param(0, common_1.Param()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -131,7 +130,7 @@ __decorate([
 __decorate([
     common_1.Post('search'),
     common_1.HttpCode(common_1.HttpStatus.OK),
-    security_2.Permission('catalog'),
+    security_1.Permission('catalog'),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -140,7 +139,7 @@ __decorate([
 __decorate([
     common_1.Patch(':pageId'),
     common_1.HttpCode(common_1.HttpStatus.OK),
-    security_2.Permission('catalog', 'catalogPatch'),
+    security_1.Permission('catalog', 'catalogPatch'),
     __param(0, common_1.Param()), __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
@@ -149,7 +148,7 @@ __decorate([
 __decorate([
     common_1.Put(),
     common_1.HttpCode(common_1.HttpStatus.OK),
-    security_2.Permission('catalog', 'catalogPut'),
+    security_1.Permission('catalog', 'catalogPut'),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -158,7 +157,7 @@ __decorate([
 __decorate([
     common_1.Delete(':pageId'),
     common_1.HttpCode(common_1.HttpStatus.OK),
-    security_2.Permission('catalog', 'catalogDelete'),
+    security_1.Permission('catalog', 'catalogDelete'),
     __param(0, common_1.Param()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

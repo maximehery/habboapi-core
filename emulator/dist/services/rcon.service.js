@@ -18,8 +18,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
-const tcpPortUsed = require("tcp-port-used");
-const promise_socket_1 = require("promise-socket");
+const net_1 = require("net");
 const common_2 = require("@habboapi/common");
 let RconService = class RconService {
     constructor(configService, logService) {
@@ -43,32 +42,47 @@ let RconService = class RconService {
     }
     checkRconStatus() {
         return __awaiter(this, void 0, void 0, function* () {
-            const status = yield tcpPortUsed.check(this.configService.config.emulator.portRcon, this.configService.config.emulator.ip);
-            if (!status) {
-                this.rconOnline = false;
-                throw new Error(`rconOffline`);
-            }
-            this.rconOnline = true;
-            return true;
+            return new Promise((resolve, reject) => {
+                const socket = new net_1.Socket();
+                socket.connect(this.configService.config.emulator.portRcon, this.configService.config.emulator.ip, () => {
+                    this.rconOnline = true;
+                    resolve(true);
+                });
+                socket.on('timeout', () => {
+                    this.rconOnline = false;
+                    reject(Error('rconOffline'));
+                });
+                socket.on('error', () => {
+                    this.rconOnline = false;
+                    reject(Error('rconOffline'));
+                });
+            });
         });
     }
     sendMessage(message) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!message)
-                throw new Error(`invalidParameters`);
-            yield this.checkRconStatus();
-            const socket = new promise_socket_1.PromiseSocket();
-            yield socket.connect(this.configService.config.emulator.portRcon, this.configService.config.emulator.ip);
-            yield socket.write(JSON.stringify(message));
-            const socketResponse = yield socket.readAll();
-            socket.destroy();
-            const socketResponseMessage = socketResponse.toString('utf8');
-            if (!socketResponseMessage)
-                throw new Error(`rconNoResponse`);
-            const rconResponse = JSON.parse(socketResponseMessage);
-            if (rconResponse.status == 2)
-                throw new Error(`rconHabboNotFound`);
-            return true;
+            return new Promise((resolve, reject) => {
+                if (!message)
+                    reject(Error('invalidParameters'));
+                if (!this.rconOnline)
+                    reject(Error('rconOffline'));
+                const socket = new net_1.Socket();
+                socket.connect(this.configService.config.emulator.portRcon, this.configService.config.emulator.ip, () => {
+                    socket.write(JSON.stringify(message));
+                });
+                socket.on('data', data => {
+                    const rconResponse = JSON.parse(data.toString('utf8'));
+                    return resolve(true);
+                });
+                socket.on('timeout', () => {
+                    this.rconOnline = false;
+                    return reject(Error('rconOffline'));
+                });
+                socket.on('error', () => {
+                    this.rconOnline = false;
+                    return reject(false);
+                });
+            });
         });
     }
 };
