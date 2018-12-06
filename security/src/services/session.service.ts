@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import * as JWT from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 
 import { ConfigService } from '@habboapi/common';
 
@@ -13,21 +13,31 @@ export class SessionService
     
     createToken(payload: ISession): string
     {
-        if(!payload) return null;
+        try
+        {
+            if(!payload) return null;
 
-        const token = JWT.sign(payload, this.configService.config.session.secret, {
-            expiresIn: '1d',
-            issuer: this.configService.config.public.name
-        });
+            const token = sign(payload, this.configService.config.session.secret, {
+                expiresIn: '1d',
+                issuer: this.configService.config.public.name
+            });
 
-        return token;
+            return token;
+        }
+
+        catch(err)
+        {
+            return null;
+        }
     }
 
     validateToken(token: string): ISession
     {
         try
         {
-            const payload = <ISession>JWT.verify(token, this.configService.config.session.secret, {
+            if(!token) return null;
+
+            const payload = <ISession>verify(token, this.configService.config.session.secret, {
                 issuer: [ this.configService.config.public.name ]
             });
 

@@ -2,7 +2,7 @@ import { IGroup } from './group.interface';
 
 export interface IGroupList
 {
-    items: Array<IGroup>,
+    data: Array<IGroup>,
     pagination: {
         currentPage: number,
         nextPage: number,

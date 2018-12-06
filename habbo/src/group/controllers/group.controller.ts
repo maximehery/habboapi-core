@@ -1,8 +1,9 @@
 import { Controller, UseGuards, Get, Post, Param, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
-import { PermissionGuard, Permission } from '@habboapi/security';
-import { GroupService } from '../services/group.service';
+import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
+import { Permission } from '@habboapi/security/decorators/permission.decorator';
 
+import { GroupService } from '../services/group.service';
 import { IGroup, IGroupList } from '../interfaces';
 
 @Controller()
@@ -23,7 +24,7 @@ export class GroupController
                 relations: params.relations ? params.relations.split(',') : null
             });
 
-            if(!result.pagination.totalItems) throw new Error(`noGroups`);
+            if(!result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }
@@ -43,7 +44,7 @@ export class GroupController
         {
             const result = await this.groupService.getOne(params.groupId, params.relations ? params.relations.split(',') : null);
 
-            if(!result) throw new Error(`invalidGroup`);
+            if(!result) throw new Error('no_results');
 
             return result;
         }
@@ -63,7 +64,7 @@ export class GroupController
         {
             const result = await this.groupService.getAll(body.searchOptions);
 
-            if(!result.pagination.totalItems) throw new Error(`noGroups`);
+            if(!result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }

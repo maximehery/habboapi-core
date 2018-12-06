@@ -1,3 +1,3 @@
-import { CatalogItemEntity } from '../entities/catalogItem.entity';
+import { CatalogItemEntity } from '../index';
 
 export interface ICatalogItem extends CatalogItemEntity {}

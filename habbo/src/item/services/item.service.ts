@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Equal, Like } from 'typeorm';
+import { Repository } from 'typeorm';
+
+import { ISearchOptions, RepositoryHelper } from '@habboapi/common';
 
 import { ItemEntity } from '../entities/item.entity';
-
-import { ISearchOptions } from '@habboapi/common';
 import { IItem, IItemList } from '../interfaces';
 
 @Injectable()
@@ -16,82 +16,12 @@ export class ItemService
 
     async getAll(searchOptions?: ISearchOptions): Promise<IItemList>
     {
-        const search: ISearchOptions = {
-            where:      searchOptions.where || null,
-            order:      searchOptions.order || null,
-            limit:      searchOptions.limit && searchOptions.limit >= 20 ? +searchOptions.limit : 20,
-            page:       +searchOptions.page || 1,
-            relations:  searchOptions.relations
-        };
-
-        let searchWhereOptions = {};
-        let searchOrderOptions = {};
-
-        if(search.where && search.where.length >= 1)
-        {
-            search.where.forEach(where =>
-            {
-                if(where.column && where.operator && where.value)
-                {
-                    const columnMetadata = this.itemRepository.metadata.columns.find(column => column.propertyName == where.column && column.isSelect == true);
-
-                    if(!columnMetadata) throw new Error(`invalidSearchColumn: ${where.column}`);
-
-                    if(where.operator == 'equals') return searchWhereOptions[columnMetadata.propertyName]       = Equal(where.value);
-                    else if(where.operator == 'like') return searchWhereOptions[columnMetadata.propertyName]    = Like(`%${where.value}%`);
-                    else throw new Error(`invalidSearchOperator: ${where.operator}`);
-                }
-
-                throw new Error(`invalidSearch: ${where.column}:${where.operator}:${where.value}`);
-            });
-        }
-
-        if(search.order && search.order.length >= 1)
-        {
-            search.order.forEach(order =>
-            {
-                if(order.column && order.sort)
-                {
-                    const columnMetadata = this.itemRepository.metadata.columns.find(column => column.propertyName == order.column && column.isSelect == true);
-
-                    if(!columnMetadata) throw new Error(`invalidOrderColumn: ${order.column}`);
-
-                    if(order.sort == 'ASC' || order.sort == 'DESC') return searchOrderOptions[columnMetadata.propertyName] = order.sort;
-                    else throw new Error(`invalidOrderType: ${order.sort}`);
-                }
-
-                throw new Error(`invalidOrder: ${order.column}:${order.sort}`);
-            });
-        }
-
-        const result = await this.itemRepository.findAndCount({
-            where: searchWhereOptions,
-            order: searchOrderOptions,
-            take: search.limit,
-            skip: (search.page - 1) * search.limit,
-            relations: search.relations
-        });
-
-        let nextPage        = search.page + 1;
-        let previousPage    = search.page - 1;
-        let totalPages      = Math.ceil(+result[1] / search.limit);
-        let totalItems      = +result[1];
-
-        return {
-            items: result[0],
-            pagination: {
-                currentPage: search.page,
-                nextPage: nextPage > totalPages ? search.page > totalPages ? 1 : search.page : nextPage,
-                previousPage: previousPage > totalPages ? 1 : previousPage || 1,
-                totalPages: totalPages,
-                totalItems: totalItems
-            }
-        };
+        return await RepositoryHelper.search(this.itemRepository, searchOptions || null);
     }
 
     async getOne(itemId: number, relations?: Array<string>): Promise<IItem>
     {
-        if(!itemId) throw new Error(`invalidParameters`);
+        if(!itemId) return Promise.reject('invalid_parameters');
 
         return await this.itemRepository.findOne({
             where: { id: itemId },
@@ -101,7 +31,7 @@ export class ItemService
 
     async put(item: IItem): Promise<IItem>
     {
-        if(!item) throw new Error(`invalidParameters`);
+        if(!item) return Promise.reject('invalid_parameters');
 
         const add: IItem = {
             id: null,
@@ -119,18 +49,18 @@ export class ItemService
             groupId: item.groupId || 0
         };
 
-        if(!add.userId || !add.itemId) throw new Error(`invalidItem`);
+        if(!add.userId || !add.itemId) return Promise.reject('invalid_item');
 
         return await this.itemRepository.save(add);
     }
 
     async patch(itemId: number, item: IItem): Promise<IItem>
     {
-        if(!itemId || !item) throw new Error(`invalidParameters`);
+        if(!itemId || !item) throw new Error('invalid_parameters');
 
         const result = await this.itemRepository.findOne(itemId);
 
-        if(!result) throw new Error(`invalidItem`);
+        if(!result) return Promise.reject('invalid_item');
 
         const update: IItem = {
             id: +itemId,
@@ -148,7 +78,7 @@ export class ItemService
             groupId: item.groupId || result.groupId
         };
 
-        if(!update.userId || !update.itemId) throw new Error(`invalidItem`);
+        if(!update.userId || !update.itemId) return Promise.reject('invalid_item');
 
         await this.itemRepository
             .createQueryBuilder()
@@ -157,15 +87,20 @@ export class ItemService
             .where('id = :id', { id: itemId })
             .execute();
 
-        return update;
+        return Promise.resolve(update);
     }
 
     async delete(itemId: number): Promise<boolean>
     {
-        if(!itemId) throw new Error(`invalidParameters`);
+        if(!itemId) return Promise.reject('invalid_parameters');
 
         await this.itemRepository.delete({ id: itemId });
 
-        return true;
+        return Promise.resolve(true);
+    }
+
+    async totalItems(): Promise<number>
+    {
+        return await this.itemRepository.count();
     }
 }

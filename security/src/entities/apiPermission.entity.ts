@@ -59,4 +59,10 @@ export class ApiPermissionEntity
 
     @Column({ name: 'user_delete', type: 'enum', enum: ['0', '1'] })
     userDelete: '0' | '1';
+
+    @Column({ name: 'user_badge_put', type: 'enum', enum: ['0', '1'] })
+    userBadgePut: '0' | '1';
+
+    @Column({ name: 'user_badge_delete', type: 'enum', enum: ['0', '1'] })
+    userBadgeDelete: '0' | '1';
 }

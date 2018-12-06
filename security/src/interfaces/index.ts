@@ -1,3 +1,2 @@
-export * from './permission.interface';
-export * from './permissions.type';
+export * from './apiPermission.interface';
 export * from './session.interface';

@@ -2,7 +2,7 @@ import { IChatlogRoom } from './chatlogRoom.interface'
 
 export interface IChatlogRoomList
 {
-    items: Array<IChatlogRoom>,
+    data: Array<IChatlogRoom>,
     pagination: {
         currentPage: number,
         nextPage: number,

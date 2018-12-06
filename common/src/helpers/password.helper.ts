@@ -1,14 +1,14 @@
-import * as bcryptjs from 'bcryptjs';
+import { compareSync, hashSync } from 'bcryptjs';
 
 export class PasswordHelper
 {
     static validatePassword(check: string, against: string)
     {
-        return bcryptjs.compareSync(check, against);
+        return compareSync(check, against);
     }
 
     static encryptPassword(password: string)
     {
-        return bcryptjs.hashSync(password);
+        return hashSync(password);
     }
 }

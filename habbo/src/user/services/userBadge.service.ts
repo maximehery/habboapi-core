@@ -13,7 +13,7 @@ export class UserBadgeService
 
     async giveBadge(userIds: Array<number>, badgeCodes: Array<string>): Promise<boolean>
     {
-        if(!userIds || !badgeCodes) throw new Error('invalid_parameters');
+        if(!userIds || !badgeCodes) return Promise.reject('invalid_parameters');
 
         let values: { userId: number, badgeCode: string }[] = [];
 
@@ -28,7 +28,7 @@ export class UserBadgeService
             });
         });
 
-        if(!values) throw new Error('invalid_badges');
+        if(!values) return Promise.reject('invalid_badges');
 
         values.forEach(async value => await this.userBadgeRepository.findOne(value) || await this.userBadgeRepository.save(value));
 
@@ -37,7 +37,7 @@ export class UserBadgeService
 
     async removeBadge(userIds: Array<number>, badgeCodes: Array<string>): Promise<DeleteResult>
     {
-        if(!userIds || !badgeCodes) return Promise.reject(Error('invalid_parameters'));
+        if(!userIds || !badgeCodes) return Promise.reject('invalid_parameters');
 
         return await this.userBadgeRepository.delete({ userId: In(userIds), badgeCode: In(badgeCodes) });
     }

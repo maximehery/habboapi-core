@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Equal, Like } from 'typeorm';
+import { Repository } from 'typeorm';
+
+import { ISearchOptions, RepositoryHelper } from '@habboapi/common';
 
 import { CatalogPageEntity } from '../entities/catalogPage.entity';
-
-import { ISearchOptions } from '@habboapi/common';
 import { ICatalogPage, ICatalogPageList } from '../interfaces';
 
 @Injectable()
@@ -16,82 +16,12 @@ export class CatalogPageService
 
     async getAll(searchOptions?: ISearchOptions): Promise<ICatalogPageList>
     {
-        const search: ISearchOptions = {
-            where:      searchOptions.where || null,
-            order:      searchOptions.order || null,
-            limit:      searchOptions.limit && searchOptions.limit >= 20 ? +searchOptions.limit : 20,
-            page:       +searchOptions.page || 1,
-            relations:  searchOptions.relations
-        };
-
-        let searchWhereOptions = {};
-        let searchOrderOptions = {};
-
-        if(search.where && search.where.length >= 1)
-        {
-            search.where.forEach(where =>
-            {
-                if(where.column && where.operator && where.value)
-                {
-                    const columnMetadata = this.catalogPageRepository.metadata.columns.find(column => column.propertyName == where.column && column.isSelect == true);
-
-                    if(!columnMetadata) throw new Error(`invalidSearchColumn: ${where.column}`);
-
-                    if(where.operator == 'equals') return searchWhereOptions[columnMetadata.propertyName]       = Equal(where.value);
-                    else if(where.operator == 'like') return searchWhereOptions[columnMetadata.propertyName]    = Like(`%${where.value}%`);
-                    else throw new Error(`invalidSearchOperator: ${where.operator}`);
-                }
-
-                throw new Error(`invalidSearch: ${where.column}:${where.operator}:${where.value}`);
-            });
-        }
-
-        if(search.order && search.order.length >= 1)
-        {
-            search.order.forEach(order =>
-            {
-                if(order.column && order.sort)
-                {
-                    const columnMetadata = this.catalogPageRepository.metadata.columns.find(column => column.propertyName == order.column && column.isSelect == true);
-
-                    if(!columnMetadata) throw new Error(`invalidOrderColumn: ${order.column}`);
-
-                    if(order.sort == 'ASC' || order.sort == 'DESC') return searchOrderOptions[columnMetadata.propertyName] = order.sort;
-                    else throw new Error(`invalidOrderType: ${order.sort}`);
-                }
-
-                throw new Error(`invalidOrder: ${order.column}:${order.sort}`);
-            });
-        }
-
-        const result = await this.catalogPageRepository.findAndCount({
-            where: searchWhereOptions,
-            order: searchOrderOptions,
-            take: search.limit,
-            skip: (search.page - 1) * search.limit,
-            relations: search.relations
-        });
-
-        let nextPage        = search.page + 1;
-        let previousPage    = search.page - 1;
-        let totalPages      = Math.ceil(+result[1] / search.limit);
-        let totalItems      = +result[1];
-
-        return {
-            items: result[0],
-            pagination: {
-                currentPage: search.page,
-                nextPage: nextPage > totalPages ? search.page > totalPages ? 1 : search.page : nextPage,
-                previousPage: previousPage > totalPages ? 1 : previousPage || 1,
-                totalPages: totalPages,
-                totalItems: totalItems
-            }
-        };
+        return await RepositoryHelper.search(this.catalogPageRepository, searchOptions || null);
     }
 
     async getOne(pageId: number, relations?: Array<string>): Promise<ICatalogPage>
     {
-        if(!pageId) throw new Error(`invalidParameters`);
+        if(!pageId) return Promise.reject('invalid_parameters');
 
         return await this.catalogPageRepository.findOne({
             where: { id: pageId },
@@ -101,7 +31,7 @@ export class CatalogPageService
 
     async put(page: ICatalogPage): Promise<ICatalogPage>
     {
-        if(!page) throw new Error(`invalidParameters`);
+        if(!page) return Promise.reject('invalid_parameters');
 
         const add: ICatalogPage = {
             id: null,
@@ -128,18 +58,18 @@ export class CatalogPageService
             roomId: page.roomId || 0
         };
 
-        if(!add.caption) throw new Error(`invalidPage`);
+        if(!add.caption) return Promise.reject('invalid_item');
 
         return await this.catalogPageRepository.save(add);
     }
 
     async patch(pageId: number, page: ICatalogPage): Promise<ICatalogPage>
     {
-        if(!pageId || !page) throw new Error(`invalidParameters`);
+        if(!pageId || !page) return Promise.reject('invalid_parameters');
 
         const result = await this.catalogPageRepository.findOne(pageId);
 
-        if(!result) throw new Error(`invalidPage`);
+        if(!result) return Promise.reject('invalid_item');
 
         const update: ICatalogPage = {
             id: pageId,
@@ -166,7 +96,7 @@ export class CatalogPageService
             roomId: page.roomId || result.roomId
         };
 
-        if(!update.caption) throw new Error(`invalidPage`);
+        if(!update.caption) return Promise.reject('invalid_item');
 
         await this.catalogPageRepository
             .createQueryBuilder()
@@ -175,15 +105,20 @@ export class CatalogPageService
             .where('id = :id', { id: pageId })
             .execute();
 
-        return update;
+        return Promise.resolve(update);
     }
 
     async delete(pageId: number): Promise<boolean>
     {
-        if(!pageId) throw new Error(`invalidParameters`);
+        if(!pageId) return Promise.reject('invalid_parameters');
 
         await this.catalogPageRepository.delete({ id: pageId });
 
-        return true;
+        return Promise.resolve(true);
+    }
+
+    async totalPages(): Promise<number>
+    {
+        return await this.catalogPageRepository.count();
     }
 }

@@ -17,7 +17,7 @@ export class LoadPermissionsMiddleware implements NestMiddleware
 
                 const permissions = this.permissionService.getPermissions(req.user.rank);
 
-                if(!permissions) throw new HttpException('invalidPermissions', HttpStatus.BAD_REQUEST);
+                if(!permissions) throw new HttpException('invalid_permission', HttpStatus.BAD_REQUEST);
 
                 req.user.permissions = permissions;
             }

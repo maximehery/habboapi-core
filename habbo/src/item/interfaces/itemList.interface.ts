@@ -2,7 +2,7 @@ import { IItem } from './item.interface';
 
 export interface IItemList
 {
-    items: Array<IItem>,
+    data: Array<IItem>,
     pagination: {
         currentPage: number,
         nextPage: number,

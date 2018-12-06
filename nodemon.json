@@ -1,5 +1,5 @@
 {
-  "watch": ["src"],
+  "watch": ["common/out-tsc/index.js", "emulator/out-tsc/index.js", "habbo/out-tsc/index.js", "security/out-tsc/index.js", "src"],
   "ext": "ts",
   "exec": "node ./index --dev"
 }

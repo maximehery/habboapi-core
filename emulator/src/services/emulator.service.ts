@@ -1,60 +1,114 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 
 import { Socket } from 'net';
 
 import { ConfigService, LogService } from '@habboapi/common';
 
 @Injectable()
-export class EmulatorService implements OnModuleInit
+export class EmulatorService implements OnModuleInit, OnModuleDestroy
 {
-    gameOnline: boolean = false;
+    private gameConnection: Socket;
+    private gameOnline: boolean;
 
     constructor(
         private readonly configService: ConfigService,
         private readonly logService: LogService) {}
 
-    async onModuleInit()
+    get status(): boolean
     {
-        try
-        {
-            await this.checkGameStatus();
-
-            this.logService.success(`[ONLINE] Arcturus Game Server: ${this.configService.config.emulator.ip}:${this.configService.config.emulator.port}`, 'EmulatorService');
-        }
-
-        catch(err)
-        {
-            if(err.message == 'gameOffline') this.logService.error(`[OFFLINE] Arcturus Game Server: ${this.configService.config.emulator.ip}:${this.configService.config.emulator.port}`, err.stack, 'EmulatorService');
-            else this.logService.error(err.message, err.stack, 'EmulatorService');
-        }
+        return this.gameOnline;
     }
 
-    async checkGameStatus(): Promise<any>
+    async onModuleInit()
     {
-        return new Promise((resolve, reject) =>
+        if(this.configService.config.emulator.watchEmulator) this.watch();
+    }
+
+    onModuleDestroy()
+    {
+        if(this.gameConnection) this.gameConnection.destroy();
+    }
+
+    watch()
+    {
+        this.gameOnline = false;
+
+        this.gameConnection = new Socket();
+
+        this.connect();
+
+        this.timeout();
+        this.close();
+        this.error();
+    }
+
+    connect()
+    {
+        if(!this.gameConnection) throw new Error('no_socket');
+
+        this.gameConnection.connect(this.configService.config.emulator.port, this.configService.config.emulator.ip, () =>
         {
-            const socket = new Socket();
+            this.gameOnline = true;
 
-            socket.connect(this.configService.config.emulator.port, this.configService.config.emulator.ip, () =>
+            this.logService.log(`Connection Established: ${ this.configService.config.emulator.ip}:${this.configService.config.emulator.port }`, 'EmulatorService');
+        });
+    }
+
+    timeout()
+    {
+        this.gameConnection.on('timeout', () =>
+        {
+            this.gameConnection.destroy();
+
+            this.gameOnline = false;
+
+            this.logService.warn(`Connection Timeout: ${ this.configService.config.emulator.ip }:${ this.configService.config.emulator.port }`, 'EmulatorService');
+        });
+    }
+
+    close()
+    {
+        this.gameConnection.on('close', hadError =>
+        {
+            this.gameConnection.destroy();
+
+            this.gameOnline = false;
+
+            !hadError && this.logService.warn(`Connection Closed: ${ this.configService.config.emulator.ip }:${ this.configService.config.emulator.port }`, 'EmulatorService');
+        });
+    }
+
+    error()
+    {
+        this.gameConnection.on('error', (err: any) =>
+        {
+            this.gameConnection.destroy();
+
+            this.gameOnline = false;
+
+            if(err.code == 'ECONNREFUSED')
             {
-                this.gameOnline = true;
+                this.logService.warn(`Connection Refused: ${ this.configService.config.emulator.ip }:${ this.configService.config.emulator.port }`, 'EmulatorService');
+                this.logService.warn(`The emulator isn't responding, make sure it's online.`, `EmulatorService`);
+                this.logService.warn(`Attempting to connect in 30 seconds...`, `EmulatorService`);
 
-                resolve(true);
-            });
+                setTimeout(() => this.watch(), 30000);
 
-            socket.on('timeout', () =>
+                return;
+            }
+
+            if(err.code == 'ECONNRESET')
             {
-                this.gameOnline = false;
+                this.logService.warn(`Connection Closed: ${ this.configService.config.emulator.ip }:${ this.configService.config.emulator.port }`, 'EmulatorService');
+                this.logService.warn(`The emulator has gone offline, check your emulator for further details.`, `EmulatorService`);
+                this.logService.warn(`Attempting to reconnect in 30 seconds...`, `EmulatorService`);
 
-                reject(Error('gameOffline'));
-            });
+                setTimeout(() => this.watch(), 30000);
 
-            socket.on('error', () =>
-            {
-                this.gameOnline = false;
-
-                reject(Error('gameOffline'));
-            });
+                return;
+            }
+            
+            this.logService.warn(`Connection Error: ${ err.message }`, 'EmulatorService');
         });
     }
 }

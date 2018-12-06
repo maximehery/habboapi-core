@@ -3,6 +3,7 @@
         "module": "commonjs",
         "declaration": true,
         "noImplicitAny": false,
+        "noUnusedLocals": false,
         "removeComments": true,
         "noLib": false,
         "emitDecoratorMetadata": true,
@@ -10,12 +11,11 @@
         "target": "es6",
         "sourceMap": false,
         "allowJs": false,
-        "outDir": "./dist",
         "baseUrl": "./src",
-        "moduleResolution": "node"
+        "outDir": "./out-tsc"
     },
     "exclude": [
         "node_modules",
-        "dist"
+        "out-tsc"
     ]
 }

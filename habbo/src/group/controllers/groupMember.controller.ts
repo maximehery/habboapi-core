@@ -1,8 +1,9 @@
 import { Controller, UseGuards, Get, Post, Param, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
-import { PermissionGuard, Permission } from '@habboapi/security';
-import { GroupMemberService } from '../services/groupMember.service';
+import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
+import { Permission } from '@habboapi/security/decorators/permission.decorator';
 
+import { GroupMemberService } from '../services/groupMember.service';
 import { IGroupMember, IGroupMemberList } from '../interfaces';
 
 @Controller('member')
@@ -23,7 +24,7 @@ export class GroupMemberController
                 relations: params.relations ? params.relations.split(',') : null
             });
 
-            if(!result.pagination.totalItems) throw new Error(`noGroupMemberships`);
+            if(!result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }
@@ -43,7 +44,7 @@ export class GroupMemberController
         {
             const result = await this.groupMemberService.getOne(params.groupId, params.relations ? params.relations.split(',') : null);
 
-            if(!result) throw new Error(`invalidGroupMembership`);
+            if(!result) throw new Error('no_results');
 
             return result;
         }
@@ -63,7 +64,7 @@ export class GroupMemberController
         {
             const result = await this.groupMemberService.getAll(body.searchOptions);
 
-            if(!result.pagination.totalItems) throw new Error(`noGroupMemberships`);
+            if(!result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }

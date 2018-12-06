@@ -1,13 +1,18 @@
-import { Controller, Put, Delete, Body, Res, HttpStatus, HttpException } from '@nestjs/common';
+import { Controller, UseGuards, Put, Delete, Body, HttpStatus, HttpException } from '@nestjs/common';
+
+import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
+import { Permission } from '@habboapi/security/decorators/permission.decorator';
 
 import { UserBadgeService } from '../services/userBadge.service';
 
 @Controller('badge')
+@UseGuards(PermissionGuard)
 export class UserBadgeController
 {
     constructor(private readonly userBadgeService: UserBadgeService) {}
 
     @Put()
+    @Permission('userBadgePut')
     async giveBadge(@Body() body): Promise<any>
     {
         try
@@ -26,6 +31,7 @@ export class UserBadgeController
     }
 
     @Delete()
+    @Permission('userBadgeDelete')
     async remove(@Body() body): Promise<any>
     {
         try

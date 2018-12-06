@@ -1,8 +1,11 @@
 import { Routes } from 'nest-router';
 
-import { HabboModule, CatalogModule, ChatlogModule, GroupModule, ItemModule, ModerationModule, RoomModule, UserModule } from '@habboapi/habbo';
+import { HabboModule, CatalogModule, ChatlogModule, GroupModule, ItemModule, ModerationModule, RoomModule, SystemModule, UserModule } from '@habboapi/habbo';
 
 import { SecurityModule } from '@habboapi/security';
+
+import { PluginsModule } from './plugins/plugins.module';
+import { PluginName } from './plugins/pluginName/pluginName.module';
 
 export const routes: Routes = [
     {
@@ -34,6 +37,10 @@ export const routes: Routes = [
                 module: RoomModule
             },
             {
+                path: '/system',
+                module: SystemModule
+            },
+            {
                 path: '/user',
                 module: UserModule
             }
@@ -42,5 +49,15 @@ export const routes: Routes = [
     {
         path: '/security',
         module: SecurityModule
+    },
+    {
+        path: '/plugin',
+        module: PluginsModule,
+        children: [
+            {
+                path: '/pluginName',
+                module: PluginName
+            }
+        ]
     }
 ];

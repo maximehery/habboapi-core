@@ -1,8 +1,9 @@
 import { Controller, UseGuards, Get, Post, Patch, Put, Delete, Param, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
-import { PermissionGuard, Permission } from '@habboapi/security';
-import { ItemService } from '../services/item.service';
+import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
+import { Permission } from '@habboapi/security/decorators/permission.decorator';
 
+import { ItemService } from '../services/item.service';
 import { IItem, IItemList } from '../interfaces';
 
 @Controller()
@@ -23,7 +24,7 @@ export class ItemController
                 relations: params.relations ? params.relations.split(',') : null
             });
 
-            if(!result.pagination.totalItems) throw new Error(`noItems`);
+            if(!result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }
@@ -43,7 +44,7 @@ export class ItemController
         {
             const result = await this.itemService.getOne(params.itemId, params.relations ? params.relations.split(',') : null);
 
-            if(!result) throw new Error(`invalidItem`);
+            if(!result) throw new Error('no_results');
 
             return result;
         }
@@ -63,7 +64,7 @@ export class ItemController
         {
             const result = await this.itemService.getAll(body.searchOptions);
 
-            if(!result.pagination.totalItems) throw new Error(`noItems`);
+            if(!result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }
@@ -83,7 +84,7 @@ export class ItemController
         {
             const result = await this.itemService.patch(params.itemId, body.item);
 
-            if(!result) throw new Error(`invalidItem`);
+            if(!result) throw new Error('no_results');
 
             return result;
         }
@@ -103,7 +104,7 @@ export class ItemController
         {
             const result = await this.itemService.put(body.item);
 
-            if(!result) throw new Error(`invalidItem`);
+            if(!result) throw new Error('no_results');
 
             return result;
         }
@@ -123,7 +124,7 @@ export class ItemController
         {
             const result = await this.itemService.delete(params.itemId);
 
-            if(!result) throw new Error(`invalidItem`);
+            if(!result) throw new Error('no_results');
 
             return null;
         }

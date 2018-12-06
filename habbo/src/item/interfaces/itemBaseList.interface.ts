@@ -2,7 +2,7 @@ import { IItemBase } from './itemBase.interface';
 
 export interface IItemBaseList
 {
-    items: Array<IItemBase>,
+    data: Array<IItemBase>,
     pagination: {
         currentPage: number,
         nextPage: number,

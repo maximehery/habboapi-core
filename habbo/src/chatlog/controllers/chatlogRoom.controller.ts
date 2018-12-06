@@ -1,8 +1,9 @@
 import { Controller, UseGuards, Get, Post, Delete, Param, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
-import { PermissionGuard, Permission } from '@habboapi/security';
-import { ChatlogRoomService } from '../services/chatlogRoom.service';
+import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
+import { Permission } from '@habboapi/security/decorators/permission.decorator';
 
+import { ChatlogRoomService } from '../services/chatlogRoom.service';
 import { IChatlogPrivate, IChatlogPrivateList } from '../interfaces';
 
 @Controller('room')
@@ -23,7 +24,7 @@ export class ChatlogRoomController
                 relations: params.relations ? params.relations.split(',') : null
             });
 
-            if(!result.pagination.totalItems) throw new Error(`noChatlogs`);
+            if(!result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }
@@ -61,7 +62,7 @@ export class ChatlogRoomController
         {
             const result = await this.chatlogRoomService.getOne(params.chatlogId, params.relations ? params.relations.split(',') : null);
 
-            if(!result) throw new Error(`invalidChatlog`);
+            if(!result) throw new Error('no_results');
 
             return result;
         }
@@ -81,7 +82,7 @@ export class ChatlogRoomController
         {
             const result = await this.chatlogRoomService.getAll(body.searchOptions);
 
-            if(!result.pagination.totalItems) throw new Error(`noChatlogs`);
+            if(!result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }
@@ -101,7 +102,7 @@ export class ChatlogRoomController
         {
             const result = await this.chatlogRoomService.delete(params.chatlogId);
 
-            if(!result) throw new Error(`invalidChatlog`);
+            if(!result) throw new Error('no_results');
 
             return null;
         }

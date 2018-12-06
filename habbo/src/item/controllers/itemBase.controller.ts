@@ -1,8 +1,9 @@
 import { Controller, UseGuards, Get, Post, Patch, Put, Delete, Param, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
-import { PermissionGuard, Permission } from '@habboapi/security';
-import { ItemBaseService } from '../services/itemBase.service';
+import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
+import { Permission } from '@habboapi/security/decorators/permission.decorator';
 
+import { ItemBaseService } from '../services/itemBase.service';
 import { IItemBase, IItemBaseList } from '../interfaces';
 
 @Controller('base')
@@ -23,7 +24,7 @@ export class ItemBaseController
                 relations: params.relations ? params.relations.split(',') : null
             });
 
-            if(!result.pagination.totalItems) throw new Error(`noItemsBase`);
+            if(!result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }
@@ -43,7 +44,7 @@ export class ItemBaseController
         {
             const result = await this.itemBaseService.getOne(params.itemBaseId, params.relations ? params.relations.split(',') : null);
 
-            if(!result) throw new Error(`invalidItemBase`);
+            if(!result) throw new Error('no_results');
 
             return result;
         }
@@ -63,7 +64,7 @@ export class ItemBaseController
         {
             const result = await this.itemBaseService.getAll(body.searchOptions);
 
-            if(!result.pagination.totalItems) throw new Error(`noItemsBase`);
+            if(!result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }
@@ -83,7 +84,7 @@ export class ItemBaseController
         {
             const result = await this.itemBaseService.patch(params.itemBaseId, body.item);
 
-            if(!result) throw new Error(`invalidItemBase`);
+            if(!result) throw new Error('no_results');
 
             return result;
         }
@@ -103,7 +104,7 @@ export class ItemBaseController
         {
             const result = await this.itemBaseService.put(body.item);
 
-            if(!result) throw new Error(`invalidItemBase`);
+            if(!result) throw new Error('no_results');
 
             return result;
         }
@@ -123,7 +124,7 @@ export class ItemBaseController
         {
             const result = await this.itemBaseService.delete(params.itemBaseId);
 
-            if(!result) throw new Error(`invalidItemBase`);
+            if(!result) throw new Error('no_results');
 
             return null;
         }

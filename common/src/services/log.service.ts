@@ -1,41 +1,80 @@
-import { Injectable, LoggerService } from '@nestjs/common';
+import { Injectable, Optional, LoggerService } from '@nestjs/common';
 
-import chalk from 'chalk';
+import * as clc from 'cli-color';
 import * as moment from 'moment';
-
-import { ConfigService } from './config.service';
 
 @Injectable()
 export class LogService implements LoggerService
 {
-    constructor(private readonly configService: ConfigService) {}
-
-    logAppend = chalk.green(' [HabboAPI] ') + moment().format('D/M/YY h:mm:ss A') + ' - ';
-
-    log(message: string, context?: string)
+    private static prevTimestamp?: number;
+    private static logService?: typeof LogService | LoggerService = LogService;
+    
+    constructor(@Optional() private readonly context?: string) {}
+    
+    log(message: any, context?: string)
     {
-        if(context == 'NestApplication' && message == 'Nest application successfully started')
-        {
-            this.success(`[ONLINE] API Server: ${this.configService.config.http.ip}:${this.configService.config.http.port}`, 'HabboAPI');
-            return;
-        }
-
-        if(context == 'RouterExplorer' || context == 'RoutesResolver') return;
-        else return console.log(this.logAppend + (context ? chalk.yellow(`[${context}] `) : null) + message);
+        const { logService } = LogService;
+        
+        logService === this ? LogService.log(message, context || this.context) : logService && logService.log.call(logService, message, context || this.context);
     }
-
-    error(message: string, trace: string, context?: string)
+    
+    error(message: any, trace?: any, context?: string)
     {
-        return console.log(this.logAppend + (context ? chalk.yellow(`[${context}] `) : null) + chalk.red(message));
+        const { logService } = LogService;
+        
+        logService === this ? LogService.error(message, trace, context || this.context) : logService && logService.error.call(logService, message, trace, context || this.context);
     }
-
-    success(message: string, context?: string): void
+    
+    warn(message: any, context?: string)
     {
-        return console.log(this.logAppend + (context ? chalk.yellow(`[${context}] `) : null) + chalk.green(message));
+        const { logService } = LogService;
+        
+        logService === this ? LogService.warn(message, context || this.context) : logService && logService.warn.call(logService, message, context || this.context);
     }
-
-    warn(message: string, context?: string): void
+  
+    static log(message: any, context?: string)
     {
-        return console.log(this.logAppend + (context ? chalk.yellow(`[${context}] `) : null) + chalk.yellow(message));
+        this.printMessage(message, clc.green, context);
+    }
+    
+    static error(message: any, trace?: any, context?: string)
+    {
+        this.printMessage(message, clc.red, context);
+        this.printStackTrace(trace);
+    }
+  
+    static warn(message: any, context?: string)
+    {
+        this.printMessage(message, clc.white, context);
+    }
+    
+    private static printMessage(message: any, color: (color: string) => string, context?: string)
+    {
+        let output = message && typeof message === 'object' ? JSON.stringify(message, null, 2) : message;
+
+        output = output == 'Nest application successfully started' ? 'HabboAPI Started' : output;
+        context = context == 'RoutesResolver' || context == 'RouterExplorer' ? 'Router' : context == 'NestApplication' || !context ? 'HabboAPI' : context;
+        
+        process.stdout.write(` ${ color(`[HabboAPI]`) } ${ moment().format('M/D/YY h:mm:ss A') } `);
+        context && process.stdout.write(clc.cyan(`[${ context }] `));
+        process.stdout.write(color(output));
+        
+        this.printTimestamp();
+        process.stdout.write(`\n`);
+    }
+  
+    private static printTimestamp()
+    {
+        const now = Date.now();
+
+        process.stdout.write(clc.blackBright(` +${ now - LogService.prevTimestamp || 0 }ms`));
+        
+        LogService.prevTimestamp = now;
+    }
+  
+    private static printStackTrace(trace: string)
+    {
+        process.stdout.write(trace ? trace : 'No stack trace provided');
+        process.stdout.write(`\n`);
     }
 }

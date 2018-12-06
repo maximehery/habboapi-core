@@ -1,101 +1,116 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 
 import { Socket } from 'net';
 
 import { ConfigService, LogService } from '@habboapi/common';
-
-import { IRconMessage, IRconResponse } from '../interfaces';
+import { IRconResponse } from '../interfaces';
 
 @Injectable()
-export class RconService implements OnModuleInit
+export class RconService implements OnModuleInit, OnModuleDestroy
 {
-    rconOnline: boolean = false;
+    private rconConnection: Socket;
+    private rconOnline: boolean;
 
     constructor(
         private readonly configService: ConfigService,
         private readonly logService: LogService) {}
 
-    async onModuleInit()
+    get status(): boolean
     {
-        try
-        {
-            await this.checkRconStatus();
-
-            this.logService.success(`[ONLINE] Arcturus RCON Server: ${this.configService.config.emulator.ip}:${this.configService.config.emulator.portRcon}`, `RconService`);
-        }
-
-        catch(err)
-        {
-            if(err.message == 'rconOffline') this.logService.error(`[OFFLINE] Arcturus RCON Server: ${this.configService.config.emulator.ip}:${this.configService.config.emulator.portRcon}`, err.stack, `RconService`);
-
-            else this.logService.error(err.message, err.stack, `RconService`);
-        }
+        return this.rconOnline;
     }
 
-    async checkRconStatus(): Promise<any>
+    onModuleInit()
     {
-        return new Promise((resolve, reject) =>
+        if(this.configService.config.emulator.watchRcon) this.watch();
+    }
+
+    onModuleDestroy()
+    {
+        if(this.rconConnection) this.rconConnection.destroy();
+    }
+
+    watch()
+    {
+        this.rconOnline = false;
+
+        this.rconConnection = new Socket();
+
+        this.connect();
+        this.data();
+        this.close();
+        this.error();
+    }
+
+    connect()
+    {
+        if(!this.rconConnection) throw new Error('no_socket');
+
+        this.rconConnection.connect(this.configService.config.emulator.portRcon, this.configService.config.emulator.ip, () =>
         {
-            const socket = new Socket();
+            this.rconOnline = true;
 
-            socket.connect(this.configService.config.emulator.portRcon, this.configService.config.emulator.ip, () =>
-            {
-                this.rconOnline = true;
-
-                resolve(true);
-            });
-
-            socket.on('timeout', () =>
-            {
-                this.rconOnline = false;
-
-                reject(Error('rconOffline'));
-            });
-
-            socket.on('error', () =>
-            {
-                this.rconOnline = false;
-
-                reject(Error('rconOffline'));
-            });
+            this.logService.log(`Connection Established: ${ this.configService.config.emulator.ip}:${this.configService.config.emulator.portRcon }`, 'RconService');
         });
     }
-    
-    async sendMessage(message: IRconMessage): Promise<any>
+
+    data()
     {
-        return new Promise((resolve, reject) =>
+        this.rconConnection.on('data', data =>
         {
-            if(!message) reject(Error('invalidParameters'));
+            const response: IRconResponse = JSON.parse(data.toString('utf8'));
 
-            if(!this.rconOnline) reject(Error('rconOffline'));
+            this.logService.log(`Connection Response: ${ response }`, 'RconService');
+        });
+    }
 
-            const socket = new Socket();
+    close()
+    {
+        this.rconConnection.on('close', hadError =>
+        {
+            this.rconConnection.destroy();
 
-            socket.connect(this.configService.config.emulator.portRcon, this.configService.config.emulator.ip, () =>
+            this.rconOnline = false;
+
+            if(!hadError)
             {
-                socket.write(JSON.stringify(message));
-            });
+                this.logService.warn(`Connection Closed: ${ this.configService.config.emulator.ip }:${ this.configService.config.emulator.portRcon }`, 'RconService');
+                this.logService.warn(`The server is denying access`, 'RconService');
+            }
+        });
+    }
 
-            socket.on('data' , data =>
+    error()
+    {
+        this.rconConnection.on('error', (err: any) =>
+        {
+            this.rconConnection.destroy();
+
+            this.rconOnline = false;
+
+            if(err.code == 'ECONNREFUSED')
             {
-                const rconResponse: IRconResponse = JSON.parse(data.toString('utf8'));
+                this.logService.warn(`Connection Refused: ${ this.configService.config.emulator.ip }:${ this.configService.config.emulator.portRcon }`, 'RconService');
+                this.logService.warn(`The rcon server isn't responding, make sure it's online.`, `RconService`);
+                this.logService.warn(`Attempting to connect in 30 seconds...`, `RconService`);
 
-                return resolve(true);
-            })
+                setTimeout(() => this.onModuleInit(), 30000);
 
-            socket.on('timeout', () =>
+                return;
+            }
+
+            if(err.code == 'ECONNRESET')
             {
-                this.rconOnline = false;
+                this.logService.warn(`Connection Closed: ${ this.configService.config.emulator.ip }:${ this.configService.config.emulator.portRcon }`, 'RconService');
+                this.logService.warn(`The rcon server has gone offline, check your emulator for further details.`, `RconService`);
+                this.logService.warn(`Attempting to reconnect in 30 seconds...`, `RconService`);
 
-                return reject(Error('rconOffline'));
-            });
+                setTimeout(() => this.onModuleInit(), 30000);
 
-            socket.on('error', () =>
-            {
-                this.rconOnline = false;
-
-                return reject(false);
-            });
+                return;
+            }
+            
+            this.logService.warn(`Connection Error: ${ err.message }`, 'RconService');
         });
     }
 }

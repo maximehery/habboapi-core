@@ -1,8 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext, HttpException, HttpStatus } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import { IPermission } from '../interfaces';
-
 @Injectable()
 export class PermissionGuard implements CanActivate
 {
@@ -10,17 +8,17 @@ export class PermissionGuard implements CanActivate
 
     canActivate(context: ExecutionContext): boolean
     {
-        const permissions = this.reflector.get<IPermission[]>('permissions', context.getHandler());
+        const permissions = this.reflector.get<string[]>('permissions', context.getHandler());
 
         if(!permissions) return true;
 
         const req: any = context.switchToHttp().getRequest();
 
-        if(!req.user) throw new HttpException('invalidSession', HttpStatus.UNAUTHORIZED);
+        if(!req.user) throw new HttpException('invalid_session', HttpStatus.UNAUTHORIZED);
 
         permissions.forEach(permission =>
         {
-            if(!req.user.permissions[permission] || req.user.permissions[permission] == '0') throw new HttpException('invalidPermission', HttpStatus.UNAUTHORIZED);
+            if(!req.user.permissions[permission] || req.user.permissions[permission] == '0') throw new HttpException('invalid_permission', HttpStatus.UNAUTHORIZED);
         });
 
         return true;

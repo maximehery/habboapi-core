@@ -9,7 +9,7 @@ export class AuthenticatedMiddleware implements NestMiddleware
         {
             if(check && req.user || !check && !req.user) return next();
 
-            throw new HttpException('invalidSession', HttpStatus.UNAUTHORIZED);
+            throw new HttpException('invalid_session', HttpStatus.UNAUTHORIZED);
         }
     }
 }

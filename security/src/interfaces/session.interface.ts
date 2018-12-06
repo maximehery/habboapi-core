@@ -1,7 +1,8 @@
-import { IApiPermission } from './permission.interface';
+import { IApiPermission } from './apiPermission.interface';
 
 export interface ISession
 {
+    sessionToken?: string;
     id?: number;
     username?: string;
     look?: string;

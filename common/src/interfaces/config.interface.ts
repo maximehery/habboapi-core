@@ -4,11 +4,9 @@ export interface IConfig
         https: boolean;
         ip: string;
         port: number;
-        httpsPublicKey?: string;
-        httpsPrivateKey?: string;
     },
     database: {
-        type: string;
+        type: 'mysql';
         host: string;
         port: number;
         username: string;
@@ -26,6 +24,8 @@ export interface IConfig
         ip: string;
         port: number;
         portRcon: number;
+        watchEmulator: boolean;
+        watchRcon: boolean;
         newUser: {
             maxAccountsPerIp: number;
             rank: number;
@@ -33,12 +33,12 @@ export interface IConfig
             gender: 'M' | 'F';
             motto: string;
             credits: number;
-            duckets: number;
-            diamonds: number;
             homeRoom: number;
+            currencies?: Array<{ type: number, amount: number}>;
         }
     },
     public: {
         name: string;
+        apiUrl: string;
     }
 }

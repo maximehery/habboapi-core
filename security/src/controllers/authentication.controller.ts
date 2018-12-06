@@ -1,6 +1,7 @@
 import { Controller, Post, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
 import { AuthenticationService } from '../services/authentication.service';
+import { ISession } from '../interfaces';
 
 @Controller('authentication')
 export class AuthenticationController
@@ -9,15 +10,15 @@ export class AuthenticationController
 
     @Post('login')
     @HttpCode(200)
-    async login(@Body() body): Promise<{ sessionToken: string }>
+    async login(@Body() body): Promise<{ sessionToken: string, session: ISession }>
     {
         try
         {
-            const token = await this.authenticationService.login(body.username, body.password);
+            const session = await this.authenticationService.login(body.username, body.password);
 
-            if(!token) throw new HttpException('invalidLogin', HttpStatus.BAD_REQUEST);
+            if(!session) throw new HttpException('invalid_login', HttpStatus.BAD_REQUEST);
 
-            return { sessionToken: token };
+            return session;
         }
 
         catch(err)

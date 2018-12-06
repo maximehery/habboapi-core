@@ -17,7 +17,7 @@ export class LoadUserMiddleware implements NestMiddleware
             
             const payload = this.sessionService.validateToken(token);
             
-            if(!payload) throw new HttpException('invalidToken', HttpStatus.BAD_REQUEST);
+            if(!payload) throw new HttpException('invalid_token', HttpStatus.BAD_REQUEST);
             
             req.user = payload;
             

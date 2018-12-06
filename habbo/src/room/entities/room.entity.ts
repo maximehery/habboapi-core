@@ -2,7 +2,6 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColum
 
 import { RoomBanEntity } from './roomBan.entity';
 import { RoomEntryEntity } from './roomEntry.entity';
-import { RoomModelEntity } from './roomModel.entity';
 import { RoomMuteEntity } from './roomMute.entity';
 
 import { ChatlogRoomEntity } from '../../chatlog/entities/chatlogRoom.entity';
@@ -157,10 +156,6 @@ export class RoomEntity
 
     @OneToMany(type => RoomEntryEntity, entry => entry.entryRoom)
     roomEntries: RoomEntryEntity[];
-
-    @OneToOne(type => RoomModelEntity)
-    @JoinColumn({ name: 'model'})
-    roomModelDefinition: RoomModelEntity;
 
     @OneToMany(type => RoomMuteEntity, mute => mute.muteRoom)
     roomMutes: RoomMuteEntity[];

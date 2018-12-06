@@ -1,100 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Equal, Like } from 'typeorm';
+import { Repository } from 'typeorm';
 
-import { ItemEntity } from '../entities/item.entity';
+import { ISearchOptions, RepositoryHelper } from '@habboapi/common';
+
 import { ItemBaseEntity } from '../entities/itemBase.entity';
 
-import { ISearchOptions } from '@habboapi/common';
+import { ItemService } from './item.service';
+
 import { IItemBase, IItemBaseList } from '../interfaces';
 
 @Injectable()
 export class ItemBaseService
 {
     constructor(
-        @InjectRepository(ItemEntity)
-        private readonly itemRepository: Repository<ItemEntity>,
+        private readonly itemService: ItemService,
         @InjectRepository(ItemBaseEntity)
         private readonly itemBaseRepository: Repository<ItemBaseEntity>) {}
 
     async getAll(searchOptions?: ISearchOptions): Promise<IItemBaseList>
     {
-        const search: ISearchOptions = {
-            where:      searchOptions.where || null,
-            order:      searchOptions.order || null,
-            limit:      searchOptions.limit && searchOptions.limit >= 20 ? +searchOptions.limit : 20,
-            page:       +searchOptions.page || 1,
-            relations:  searchOptions.relations
-        };
-
-        let searchWhereOptions = {};
-        let searchOrderOptions = {};
-
-        if(search.where && search.where.length >= 1)
-        {
-            search.where.forEach(where =>
-            {
-                if(where.column && where.operator && where.value)
-                {
-                    const columnMetadata = this.itemBaseRepository.metadata.columns.find(column => column.propertyName == where.column && column.isSelect == true);
-
-                    if(!columnMetadata) throw new Error(`invalidSearchColumn: ${where.column}`);
-
-                    if(where.operator == 'equals') return searchWhereOptions[columnMetadata.propertyName]       = Equal(where.value);
-                    else if(where.operator == 'like') return searchWhereOptions[columnMetadata.propertyName]    = Like(`%${where.value}%`);
-                    else throw new Error(`invalidSearchOperator: ${where.operator}`);
-                }
-
-                throw new Error(`invalidSearch: ${where.column}:${where.operator}:${where.value}`);
-            });
-        }
-
-        if(search.order && search.order.length >= 1)
-        {
-            search.order.forEach(order =>
-            {
-                if(order.column && order.sort)
-                {
-                    const columnMetadata = this.itemBaseRepository.metadata.columns.find(column => column.propertyName == order.column && column.isSelect == true);
-
-                    if(!columnMetadata) throw new Error(`invalidOrderColumn: ${order.column}`);
-
-                    if(order.sort == 'ASC' || order.sort == 'DESC') return searchOrderOptions[columnMetadata.propertyName] = order.sort;
-                    else throw new Error(`invalidOrderType: ${order.sort}`);
-                }
-
-                throw new Error(`invalidOrder: ${order.column}:${order.sort}`);
-            });
-        }
-
-        const result = await this.itemBaseRepository.findAndCount({
-            where: searchWhereOptions,
-            order: searchOrderOptions,
-            take: search.limit,
-            skip: (search.page - 1) * search.limit,
-            relations: search.relations
-        });
-
-        let nextPage        = search.page + 1;
-        let previousPage    = search.page - 1;
-        let totalPages      = Math.ceil(+result[1] / search.limit);
-        let totalItems      = +result[1];
-
-        return {
-            items: result[0],
-            pagination: {
-                currentPage: search.page,
-                nextPage: nextPage > totalPages ? search.page > totalPages ? 1 : search.page : nextPage,
-                previousPage: previousPage > totalPages ? 1 : previousPage || 1,
-                totalPages: totalPages,
-                totalItems: totalItems
-            }
-        };
+        return await RepositoryHelper.search(this.itemBaseRepository, searchOptions || null);
     }
 
     async getOne(itemBaseId: number, relations?: Array<string>): Promise<IItemBase>
     {
-        if(!itemBaseId) throw new Error(`invalidParameters`);
+        if(!itemBaseId) return Promise.reject('invalid_parameters');
 
         return await this.itemBaseRepository.findOne({
             where: { id: itemBaseId },
@@ -104,7 +35,7 @@ export class ItemBaseService
 
     async put(item: IItemBase): Promise<IItemBase>
     {
-        if(!item) throw new Error(`invalidParameters`);
+        if(!item) return Promise.reject('invalid_parameters');
 
         const add: IItemBase = {
             id: null,
@@ -133,18 +64,18 @@ export class ItemBaseService
             customParams: item.customParams || null
         };
 
-        if(!add.itemName || !add.publicName) throw new Error(`invalidItemBase`);
+        if(!add.itemName || !add.publicName) return Promise.reject('invalid_item_base');
 
         return await this.itemBaseRepository.save(add);
     }
 
     async patch(itemBaseId: number, item: IItemBase): Promise<IItemBase>
     {
-        if(!itemBaseId || !item) throw new Error(`invalidParameters`);
+        if(!itemBaseId || !item) return Promise.reject('invalid_parameters');
 
         const result = await this.itemBaseRepository.findOne(itemBaseId);
 
-        if(!result) throw new Error(`invalidItemBase`);
+        if(!result) return Promise.reject('invalid_item_base');
 
         const update: IItemBase = {
             id: +itemBaseId,
@@ -173,7 +104,7 @@ export class ItemBaseService
             customParams: item.customParams || result.customParams
         };
 
-        if(!update.itemName || !update.publicName) throw new Error(`invalidItemBase`);
+        if(!update.itemName || !update.publicName) return Promise.reject('invalid_item_base');
 
         await this.itemBaseRepository
             .createQueryBuilder()
@@ -182,17 +113,22 @@ export class ItemBaseService
             .where('id = :id', { id: itemBaseId })
             .execute();
 
-        return update;
+        return Promise.resolve(update);
     }
 
     async delete(itemBaseId: number): Promise<boolean>
     {
-        if(!itemBaseId) throw new Error(`invalidParameters`);
+        if(!itemBaseId) return Promise.reject('invalid_parameters');
 
         await this.itemBaseRepository.delete({ id: itemBaseId });
 
-        await this.itemRepository.delete({ itemId: itemBaseId });
+        await this.itemService.delete(itemBaseId);
 
-        return true;
+        return Promise.resolve(true);
+    }
+
+    async totalItems(): Promise<number>
+    {
+        return await this.itemBaseRepository.count();
     }
 }

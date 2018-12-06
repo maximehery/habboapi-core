@@ -55,9 +55,6 @@ export class CatalogItemEntity
     @Column({ name: 'order_number' })
     orderNum: number;
 
-    @Column({ name: 'badge' })
-    badge: string;
-
     @ManyToOne(type => CatalogPageEntity)
     @JoinColumn({ name: 'page_id'})
     itemPage?: CatalogPageEntity;

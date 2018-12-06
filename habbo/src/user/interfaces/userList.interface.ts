@@ -2,7 +2,7 @@ import { IUser } from './user.interface';
 
 export interface IUserList
 {
-    items: Array<IUser>,
+    data: Array<IUser>,
     pagination: {
         currentPage: number,
         nextPage: number,

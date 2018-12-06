@@ -8,9 +8,9 @@ export class AppController
     constructor(private readonly configService: ConfigService) {}
     
     @Get()
-    root(): string
+    root(): Object
     {
-        return null;
+        return {};
     }
 
     @Get('/config.json')

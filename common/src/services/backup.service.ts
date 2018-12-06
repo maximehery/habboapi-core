@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
+import { existsSync, mkdirSync } from 'fs';
+
 import mysqldump, { DumpReturn } from 'mysqldump';
 import { TimeHelper } from '../helpers';
 
@@ -12,6 +14,10 @@ export class BackupService
 
     async backupMysql(table?: string): Promise<DumpReturn>
     {
+        if(!existsSync('./backups')) mkdirSync('./backups');
+
+        if(!existsSync('./backups/' + table)) mkdirSync('./backups/' + table);
+
         return await mysqldump({
             connection: {
                 host: this.configService.config.database.host,
@@ -20,7 +26,7 @@ export class BackupService
                 database: this.configService.config.database.database
             },
             dump: (table) ? { tables: table.split(null) } : null,
-            dumpToFile: (table) ? `backups/${ table }-${ TimeHelper.formatNow('D-M-YY-HH-m') }.sql` : `backups/full-${ TimeHelper.formatNow('D-M-YY-HH-m') }.sql`
+            dumpToFile: (table) ? `./backups/${ table }/${ table }-${ TimeHelper.formatNow('D-M-YY-HH-m') }.sql` : `backups/full-${ TimeHelper.formatNow('D-M-YY-HH-m') }.sql`
         });
     }
 }

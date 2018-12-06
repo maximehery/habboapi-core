@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -13,7 +13,7 @@ export class UserCurrencyService
         
     async modifyCurrency(userIds: Array<number>, type: number, amount: number): Promise<boolean>
     {
-        if(!userIds || !type || !amount) throw new Error('invalid_parameters');
+        if(!userIds || !type || !amount) return Promise.reject('invalid_parameters');
 
         let values: { userId: number, type: number, amount: number }[] = [];
 
@@ -26,7 +26,7 @@ export class UserCurrencyService
             });
         });
 
-        if(!values) throw new Error('invalid_currency');
+        if(!values) return Promise.reject('invalid_parameters');
 
         values.forEach(async value =>
         {
@@ -42,6 +42,6 @@ export class UserCurrencyService
             else await this.userCurrencyRepository.save(value);
         });
 
-        return true;
+        return Promise.resolve(true);
     }
 }

@@ -2,7 +2,7 @@ import { IRoom } from './room.interface';
 
 export interface IRoomList
 {
-    items: Array<IRoom>,
+    data: Array<IRoom>,
     pagination: {
         currentPage: number,
         nextPage: number,

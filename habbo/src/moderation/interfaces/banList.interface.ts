@@ -2,7 +2,7 @@ import { IBan } from './ban.interface';
 
 export interface IBanList
 {
-    items: Array<IBan>,
+    data: Array<IBan>,
     pagination: {
         currentPage: number,
         nextPage: number,

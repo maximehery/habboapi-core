@@ -4,5 +4,6 @@ export * from './group';
 export * from './item';
 export * from './moderation';
 export * from './room';
+export * from './system';
 export * from './user';
 export * from './habbo.module';

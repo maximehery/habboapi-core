@@ -1,8 +1,9 @@
 import { Controller, UseGuards, Get, Post, Param, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
-import { PermissionGuard, Permission } from '@habboapi/security';
-import { UserService } from '../services/user.service';
+import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
+import { Permission } from '@habboapi/security/decorators/permission.decorator';
 
+import { UserService } from '../services/user.service';
 import { IUser, IUserList } from '../interfaces';
 
 @Controller()
@@ -23,7 +24,7 @@ export class UserController
                 relations: params.relations ? params.relations.split(',') : null
             });
 
-            if(!result.pagination.totalItems) throw new Error(`noUsers`);
+            if(!result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }
@@ -43,7 +44,7 @@ export class UserController
         {
             const result = await this.userService.getOne(params.userId, params.relations ? params.relations.split(',') : null);
 
-            if(!result) throw new Error(`invalidUser`);
+            if(!result) throw new Error('no_results');
 
             return result;
         }
@@ -63,7 +64,7 @@ export class UserController
         {
             const result = await this.userService.getAll(body.searchOptions);
 
-            if(!result.pagination.totalItems) throw new Error(`noUsers`);
+            if(!result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }

@@ -1,8 +1,9 @@
 import { Controller, UseGuards, Get, Post, Param, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
-import { PermissionGuard, Permission } from '@habboapi/security';
-import { RoomService } from '../services/room.service';
+import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
+import { Permission } from '@habboapi/security/decorators/permission.decorator';
 
+import { RoomService } from '../services/room.service';
 import { IRoom, IRoomList } from '../interfaces';
 
 @Controller()
@@ -23,7 +24,7 @@ export class RoomController
                 relations: params.relations ? params.relations.split(',') : null
             });
 
-            if(!result.pagination.totalItems) throw new Error(`noRooms`);
+            if(!result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }
@@ -43,7 +44,7 @@ export class RoomController
         {
             const result = await this.roomService.getOne(params.roomId, params.relations ? params.relations.split(',') : null);
 
-            if(!result) throw new Error(`invalidRoom`);
+            if(!result) throw new Error('no_results');
 
             return result;
         }
@@ -63,7 +64,7 @@ export class RoomController
         {
             const result = await this.roomService.getAll(body.searchOptions);
 
-            if(!result.pagination.totalItems) throw new Error(`noRooms`);
+            if(!result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }

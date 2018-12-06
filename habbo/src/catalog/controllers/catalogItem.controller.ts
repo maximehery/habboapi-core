@@ -1,7 +1,9 @@
 import { Controller, UseGuards, Get, Post, Patch, Put, Delete, Param, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
-import { PermissionGuard, Permission } from '@habboapi/security';
-import { CatalogItemService } from '../services/catalogItem.service';
+import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
+import { Permission } from '@habboapi/security/decorators/permission.decorator';
+
+import { CatalogItemService } from '../services';
 
 import { ICatalogItem, ICatalogItemList } from '../interfaces';
 
@@ -23,7 +25,7 @@ export class CatalogItemController
                 relations: params.relations ? params.relations.split(',') : null
             });
 
-            if(!result.pagination.totalItems) throw new Error(`noItems`);
+            if(!result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }
@@ -43,7 +45,7 @@ export class CatalogItemController
         {
             const result = await this.catalogItemService.getOne(params.itemId, params.relations ? params.relations.split(',') : null);
 
-            if(!result) throw new Error(`invalidItem`);
+            if(!result) throw new Error('no_results');
 
             return result;
         }
@@ -63,7 +65,7 @@ export class CatalogItemController
         {
             const result = await this.catalogItemService.getAll(body.searchOptions);
 
-            if(!result.pagination.totalItems) throw new Error(`noItems`);
+            if(!result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }
@@ -83,7 +85,7 @@ export class CatalogItemController
         {
             const result = await this.catalogItemService.patch(params.itemId, body.item);
 
-            if(!result) throw new Error(`invalidItem`);
+            if(!result) throw new Error('no_results');
 
             return result;
         }
@@ -103,7 +105,7 @@ export class CatalogItemController
         {
             const result = await this.catalogItemService.put(body.item);
 
-            if(!result) throw new Error(`invalidItem`);
+            if(!result) throw new Error('no_results');
 
             return result;
         }
@@ -123,7 +125,7 @@ export class CatalogItemController
         {
             const result = await this.catalogItemService.delete(params.itemId);
 
-            if(!result) throw new Error(`invalidItem`);
+            if(!result) throw new Error('no_results');
 
             return null;
         }

@@ -10,9 +10,11 @@
     "url": "https://github.com/billsonnn/habboapi-core/issues"
   },
   "homepage": "https://github.com/billsonnn/habboapi-core",
+  "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "setup": "node setup/setup.js",
+    "setup": "node ./node_modules/@habboapi/setup/index",
+    "postinstall": "npm run-script setup && tsc && npm run-script start",
     "watch": "nodemon",
     "build": "tsc"
   },

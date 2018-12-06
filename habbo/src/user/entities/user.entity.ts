@@ -2,7 +2,6 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 import { UserBadgeEntity } from './userBadge.entity';
 import { UserCurrencyEntity } from './userCurrency.entity';
-import { UserFavoriteRoomEntity } from './userFavoriteRoom.entity';
 
 import { ChatlogPrivateEntity } from '../../chatlog/entities/chatlogPrivate.entity';
 import { ChatlogRoomEntity } from '../../chatlog/entities/chatlogRoom.entity';
@@ -95,9 +94,6 @@ export class UserEntity
 
     @OneToMany(type => UserCurrencyEntity, currency => currency.currencyUser)
     userCurrencies?: UserCurrencyEntity[];
-
-    @OneToMany(type => UserFavoriteRoomEntity, favorite => favorite.favoriteUser)
-    userFavoriteRooms?: UserFavoriteRoomEntity[];
 
     @OneToMany(type => ChatlogPrivateEntity, chatlog => chatlog.chatlogUser)
     userChatlogRoom: ChatlogPrivateEntity[];

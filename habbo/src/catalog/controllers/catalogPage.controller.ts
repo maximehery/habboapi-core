@@ -1,6 +1,8 @@
 import { Controller, UseGuards, Get, Post, Patch, Put, Delete, Param, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
-import { PermissionGuard, Permission } from '@habboapi/security';
+import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
+import { Permission } from '@habboapi/security/decorators/permission.decorator';
+
 import { CatalogPageService } from '../services/catalogPage.service';
 
 import { ICatalogPage, ICatalogPageList } from '../interfaces';
@@ -23,7 +25,7 @@ export class CatalogPageController
                 relations: params.relations ? params.relations.split(',') : null
             });
 
-            if(!result.pagination.totalItems) throw new Error(`noPages`);
+            if(!result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }
@@ -43,7 +45,7 @@ export class CatalogPageController
         {
             const result = await this.catalogPageService.getOne(params.pageId, params.relations ? params.relations.split(',') : null);
 
-            if(!result) throw new Error(`invalidPage`);
+            if(!result) throw new Error('no_results');
 
             return result;
         }
@@ -63,7 +65,7 @@ export class CatalogPageController
         {
             const result = await this.catalogPageService.getAll(body.searchOptions);
 
-            if(!result.pagination.totalItems) throw new Error(`noPages`);
+            if(!result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }
@@ -83,7 +85,7 @@ export class CatalogPageController
         {
             const result = await this.catalogPageService.patch(params.pageId, body.page);
 
-            if(!result) throw new Error(`invalidPage`);
+            if(!result) throw new Error('no_results');
 
             return result;
         }
@@ -103,7 +105,7 @@ export class CatalogPageController
         {
             const result = await this.catalogPageService.put(body.page);
 
-            if(!result) throw new Error(`invalidPage`);
+            if(!result) throw new Error('no_results');
 
             return result;
         }
@@ -123,7 +125,7 @@ export class CatalogPageController
         {
             const result = await this.catalogPageService.delete(params.pageId);
 
-            if(!result) throw new Error(`invalidPage`);
+            if(!result) throw new Error('no_results');
 
             return null;
         }
