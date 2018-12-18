@@ -5,6 +5,7 @@ import { CommonModule } from '@habboapi/common';
 import { EmulatorModule } from '@habboapi/emulator';
 import { HabboModule } from '@habboapi/habbo';
 import { SecurityModule, LoadUserMiddleware, LoadPermissionsMiddleware, AuthenticatedMiddleware } from '@habboapi/security';
+import { RealtimeModule } from '@habboapi/realtime';
 
 import { PluginsModule } from './plugins/plugins.module';
 
@@ -21,6 +22,7 @@ import { Config } from './config/config';
         EmulatorModule,
         HabboModule,
         SecurityModule,
+        RealtimeModule,
         PluginsModule
     ],
     controllers: [ AppController ]

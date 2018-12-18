@@ -1,3 +1,3 @@
-import { CatalogPageEntity } from '../entities/catalogPage.entity';
+import { CatalogPageEntity } from '../entities';
 
-export interface ICatalogPage extends CatalogPageEntity { }
+export interface ICatalogPage extends CatalogPageEntity {}

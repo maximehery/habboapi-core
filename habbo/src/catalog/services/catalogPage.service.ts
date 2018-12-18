@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { ISearchOptions, RepositoryHelper } from '@habboapi/common';
 
-import { CatalogPageEntity } from '../entities/catalogPage.entity';
+import { CatalogPageEntity } from '../entities';
 import { ICatalogPage, ICatalogPageList } from '../interfaces';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class CatalogPageService
         return await RepositoryHelper.search(this.catalogPageRepository, searchOptions || null);
     }
 
-    async getOne(pageId: number, relations?: Array<string>): Promise<ICatalogPage>
+    async getOne(pageId: number, relations?: string[]): Promise<ICatalogPage>
     {
         if(!pageId) return Promise.reject('invalid_parameters');
 
@@ -35,16 +35,16 @@ export class CatalogPageService
 
         const add: ICatalogPage = {
             id: null,
-            parentId: page.parentId || -1,
+            parentId: +page.parentId || -1,
             captionSave: page.captionSave || '',
             caption: page.caption || null,
-            iconColor: page.iconColor || 1,
-            iconImage: page.iconImage || 1,
+            iconColor: +page.iconColor || 1,
+            iconImage: +page.iconImage || 1,
             visible: page.visible || '1',
             enabled: page.enabled || '1',
-            minRank: page.minRank || 1,
+            minRank: +page.minRank || 1,
             clubOnly: page.clubOnly || '0',
-            orderNum: page.orderNum || 0,
+            orderNum: +page.orderNum || 0,
             pageLayout: page.pageLayout || 'default_3x3',
             pageHeadline: page.pageHeadline || '',
             pageTeaser: page.pageTeaser || '',
@@ -55,7 +55,7 @@ export class CatalogPageService
             pageTextTeaser: page.pageTextTeaser || '',
             vipOnly: page.vipOnly || '0',
             includes: page.includes || '',
-            roomId: page.roomId || 0
+            roomId: +page.roomId || 0
         };
 
         if(!add.caption) return Promise.reject('invalid_item');
@@ -73,16 +73,16 @@ export class CatalogPageService
 
         const update: ICatalogPage = {
             id: pageId,
-            parentId: page.parentId || result.parentId,
+            parentId: +page.parentId || result.parentId,
             captionSave: page.captionSave || result.captionSave,
             caption: page.caption || result.caption,
-            iconColor: page.iconColor || result.iconColor,
-            iconImage: page.iconImage || result.iconImage,
+            iconColor: +page.iconColor || result.iconColor,
+            iconImage: +page.iconImage || result.iconImage,
             visible: page.visible || result.visible,
             enabled: page.enabled || result.enabled,
-            minRank: page.minRank || result.minRank,
+            minRank: +page.minRank || result.minRank,
             clubOnly: page.clubOnly || result.clubOnly,
-            orderNum: page.orderNum || result.orderNum,
+            orderNum: +page.orderNum || result.orderNum,
             pageLayout: page.pageLayout || result.pageLayout,
             pageHeadline: page.pageHeadline || result.pageHeadline,
             pageTeaser: page.pageTeaser || result.pageTeaser,
@@ -93,7 +93,7 @@ export class CatalogPageService
             pageTextTeaser: page.pageTextTeaser || result.pageTextDetails,
             vipOnly: page.vipOnly || result.vipOnly,
             includes: page.includes || result.includes,
-            roomId: page.roomId || result.roomId
+            roomId: +page.roomId || result.roomId
         };
 
         if(!update.caption) return Promise.reject('invalid_item');

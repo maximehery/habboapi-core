@@ -1,7 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 
 import { RoomEntity } from './room.entity';
-import { UserEntity } from '../../user/entities/user.entity';
+
+import { UserEntity } from '../../user';
 
 @Entity('room_enter_log')
 export class RoomEntryEntity

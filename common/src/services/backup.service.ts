@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
 import { existsSync, mkdirSync } from 'fs';
-
 import mysqldump, { DumpReturn } from 'mysqldump';
+
 import { TimeHelper } from '../helpers';
 
 import { ConfigService } from './config.service';

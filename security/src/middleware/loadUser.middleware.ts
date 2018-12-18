@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware, MiddlewareFunction, HttpException, HttpStatus } from '@nestjs/common';
 
-import { SessionService } from '../services/session.service';
+import { SessionService } from '../services';
 
 @Injectable()
 export class LoadUserMiddleware implements NestMiddleware

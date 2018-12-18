@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 
-import { CatalogPageEntity } from './catalogPage.entity';
+import { ItemBaseEntity } from '../../item';
 
-import { ItemBaseEntity } from '../../item/entities/itemBase.entity';
+import { CatalogPageEntity } from './catalogPage.entity';
 
 @Entity('catalog_items')
 export class CatalogItemEntity

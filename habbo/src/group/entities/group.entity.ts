@@ -2,9 +2,9 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColum
 
 import { GroupMemberEntity } from './groupMember.entity';
 
-import { ItemEntity } from '../../item/entities/item.entity';
-import { RoomEntity } from '../../room/entities/room.entity';
-import { UserEntity } from '../../user/entities/user.entity';
+import { ItemEntity } from '../../item';
+import { RoomEntity } from '../../room';
+import { UserEntity } from '../../user';
 
 @Entity('guilds')
 export class GroupEntity
@@ -28,7 +28,7 @@ export class GroupEntity
     state: number;
 
     @Column({ name: 'rights', type: 'enum', enum: ['0', '1'] })
-    rights: '0' | '1';;
+    rights: '0' | '1';
 
     @Column({ name: 'color_one' })
     colorOne: number;
@@ -43,7 +43,7 @@ export class GroupEntity
     dateCreated: number;
 
     @Column({ name: 'forum', type: 'enum', enum: ['0', '1'] })
-    forum: '0' | '1';;
+    forum: '0' | '1';
 
     @Column({ name: 'read_forum', type: 'enum', enum: ['EVERYONE', 'MEMBERS', 'ADMINS'] })
     readForum: 'EVERYONE' | 'MEMBERS' | 'ADMINS';

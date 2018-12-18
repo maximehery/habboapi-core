@@ -3,19 +3,10 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { UserBadgeEntity } from './userBadge.entity';
 import { UserCurrencyEntity } from './userCurrency.entity';
 
-import { ChatlogPrivateEntity } from '../../chatlog/entities/chatlogPrivate.entity';
-import { ChatlogRoomEntity } from '../../chatlog/entities/chatlogRoom.entity';
-import { ChatlogCommandEntity } from '../../chatlog/entities/chatlogCommand.entity';
-
-import { GroupEntity } from '../../group/entities/group.entity';
-import { GroupMemberEntity } from '../../group/entities/groupMember.entity';
-
-import { ItemEntity } from '../../item/entities/item.entity';
-
-import { RoomEntity } from '../../room/entities/room.entity';
-import { RoomBanEntity } from '../../room/entities/roomBan.entity';
-import { RoomEntryEntity } from '../../room/entities/roomEntry.entity';
-import { RoomMuteEntity } from '../../room/entities/roomMute.entity';
+import { ChatlogPrivateEntity, ChatlogRoomEntity, ChatlogCommandEntity } from '../../chatlog';
+import { GroupEntity, GroupMemberEntity } from '../../group';
+import { ItemEntity } from '../../item';
+import { RoomEntity, RoomBanEntity, RoomEntryEntity, RoomMuteEntity } from '../../room';
 
 @Entity('users')
 export class UserEntity

@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware, MiddlewareFunction, HttpException, HttpStatus } from '@nestjs/common';
 
-import { PermissionService } from '../services/permission.service';
+import { PermissionService } from '../services';
 
 @Injectable()
 export class LoadPermissionsMiddleware implements NestMiddleware

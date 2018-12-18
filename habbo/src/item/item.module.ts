@@ -7,9 +7,23 @@ import { ItemService, ItemBaseService } from './services';
 
 @Global()
 @Module({
-    imports: [ TypeOrmModule.forFeature([ ItemEntity, ItemBaseEntity ]) ],
-    controllers: [ ItemBaseController, ItemController ],
-    exports: [ ItemService, ItemBaseService ],
-    providers: [ ItemService, ItemBaseService ]
+    imports: [
+        TypeOrmModule.forFeature([
+            ItemEntity,
+            ItemBaseEntity
+        ])
+    ],
+    controllers: [
+        ItemBaseController,
+        ItemController
+    ],
+    exports: [
+        ItemService,
+        ItemBaseService
+    ],
+    providers: [
+        ItemService,
+        ItemBaseService
+    ]
 })
 export class ItemModule {}

@@ -1,4 +1,4 @@
-import { Global, Module, DynamicModule } from '@nestjs/common';
+import { Global, Module, DynamicModule, OnModuleInit } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 
@@ -17,21 +17,26 @@ console.log(` 888    888 "Y888888 88888P"  88888P"   "Y88P" d88P     888 888    
 console.log(` @habboapi by Billsonnn`);
 console.log();
 
-const packageInfo = require(__dirname + '/package.json');
-
-LogService.log(`Initializing ${packageInfo.name}@${packageInfo.version}`, 'CommonModule');
-
 @Global()
 @Module({})
-export class CommonModule
+export class CommonModule implements OnModuleInit
 {
     constructor(private readonly connection: Connection) {}
+
+    onModuleInit()
+    {
+        const packageInfo = require(__dirname + '/package.json');
+
+        LogService.log(`${ packageInfo.name }@${ packageInfo.version } initalized`, 'CommonModule');
+    }
     
     static forRoot(configuration: IConfig): DynamicModule
     {
         return {
             module: CommonModule,
-            imports: [ TypeOrmModule.forRoot(<TypeOrmModuleOptions> configuration.database) ],
+            imports: [
+                TypeOrmModule.forRoot(<TypeOrmModuleOptions> configuration.database)
+            ],
             providers: [
                 {
                     provide: ConfigService,
@@ -43,7 +48,11 @@ export class CommonModule
                 BackupService,
                 LogService
             ],
-            exports: [ ConfigService, BackupService, LogService ]
+            exports: [
+                ConfigService,
+                BackupService,
+                LogService
+            ]
         }
     }
 }

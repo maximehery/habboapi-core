@@ -7,9 +7,22 @@ import { RoomService } from './services';
 
 @Global()
 @Module({
-    imports: [ TypeOrmModule.forFeature([ RoomEntity, RoomBanEntity, RoomEntryEntity, RoomMuteEntity ]) ],
-    controllers: [ RoomController ],
-    exports: [ RoomService ],
-    providers: [ RoomService ]
+    imports: [
+        TypeOrmModule.forFeature([
+            RoomEntity,
+            RoomBanEntity,
+            RoomEntryEntity,
+            RoomMuteEntity
+        ])
+    ],
+    controllers: [
+        RoomController
+    ],
+    exports: [
+        RoomService
+    ],
+    providers: [
+        RoomService
+    ]
 })
 export class RoomModule {}

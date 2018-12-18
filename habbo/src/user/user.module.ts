@@ -7,9 +7,29 @@ import { UserService, UserBadgeService, UserCurrencyService, UserValidatorServic
 
 @Global()
 @Module({
-    imports: [ TypeOrmModule.forFeature([ UserEntity, UserBadgeEntity, UserCurrencyEntity ]) ],
-    controllers: [ UserController, UserBadgeController, UserValidatorsController ],
-    providers: [ UserService, UserBadgeService, UserCurrencyService, UserValidatorService ],
-    exports: [ UserService, UserBadgeService, UserCurrencyService, UserValidatorService ]
+    imports: [
+        TypeOrmModule.forFeature([
+            UserEntity,
+            UserBadgeEntity,
+            UserCurrencyEntity
+        ])
+    ],
+    controllers: [
+        UserController,
+        UserBadgeController,
+        UserValidatorsController
+    ],
+    providers: [
+        UserService,
+        UserBadgeService,
+        UserCurrencyService,
+        UserValidatorService
+    ],
+    exports: [
+        UserService,
+        UserBadgeService,
+        UserCurrencyService,
+        UserValidatorService
+    ]
 })
 export class UserModule {}

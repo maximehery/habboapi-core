@@ -4,11 +4,10 @@ import { Repository } from 'typeorm';
 
 import { ISearchOptions, RepositoryHelper } from '@habboapi/common';
 
-import { ItemBaseEntity } from '../entities/itemBase.entity';
+import { ItemBaseEntity } from '../entities';
+import { IItemBase, IItemBaseList } from '../interfaces';
 
 import { ItemService } from './item.service';
-
-import { IItemBase, IItemBaseList } from '../interfaces';
 
 @Injectable()
 export class ItemBaseService
@@ -23,7 +22,7 @@ export class ItemBaseService
         return await RepositoryHelper.search(this.itemBaseRepository, searchOptions || null);
     }
 
-    async getOne(itemBaseId: number, relations?: Array<string>): Promise<IItemBase>
+    async getOne(itemBaseId: number, relations?: string[]): Promise<IItemBase>
     {
         if(!itemBaseId) return Promise.reject('invalid_parameters');
 

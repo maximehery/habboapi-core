@@ -1,12 +1,21 @@
 import { Module, Global } from '@nestjs/common';
 
-import { StatisticsController } from './controllers';
-import { StatisticsService } from './services';
+import { SearchController, StatisticsController } from './controllers';
+import { SearchService, StatisticsService } from './services';
 
 @Global()
 @Module({
-    controllers: [ StatisticsController ],
-    providers: [ StatisticsService ],
-    exports: [ StatisticsService ]
+    controllers: [
+        SearchController,
+        StatisticsController
+    ],
+    providers: [
+        SearchService,
+        StatisticsService
+    ],
+    exports: [
+        SearchService,
+        StatisticsService
+    ]
 })
 export class SystemModule {}

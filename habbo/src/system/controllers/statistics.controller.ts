@@ -1,9 +1,10 @@
-import { Controller, UseGuards, Get, Post, Param, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
+import { Controller, UseGuards, Get, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
+import { Permission } from '@habboapi/security/decorators';
 import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
-import { Permission } from '@habboapi/security/decorators/permission.decorator';
 
-import { StatisticsService } from '../services/statistics.service';
+import { ISystemStatistics } from '../interfaces';
+import { StatisticsService } from '../services';
 
 @Controller()
 @UseGuards(PermissionGuard)
@@ -13,17 +14,9 @@ export class StatisticsController
 
     @Get('statistics')
     @HttpCode(HttpStatus.OK)
-    //@Permission('systemStatistics')
-    async statistics()
+    @Permission('systemStatistics')
+    statistics(): ISystemStatistics
     {
-        try
-        {
-            return this.statisticsService.systemStatistics;
-        }
-
-        catch(err)
-        {
-            throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
-        }
+        return this.statisticsService.systemStatistics;
     }
 }

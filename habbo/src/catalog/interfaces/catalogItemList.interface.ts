@@ -2,7 +2,7 @@ import { ICatalogItem } from './catalogItem.interface';
 
 export interface ICatalogItemList
 {
-    data: Array<ICatalogItem>,
+    data: ICatalogItem[],
     pagination: {
         currentPage: number,
         nextPage: number,

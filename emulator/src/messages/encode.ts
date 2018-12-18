@@ -9,10 +9,8 @@ export class Encode
         return (bytes[0] * 16777216) + (bytes[1] * 65536) + (bytes[2] * 256) + (bytes[3]);
     }
 
-    static encodeInt32(number: number): Array<number>
+    static encodeInt32(number: number): number[]
     {
-        let bytes: Array<number> = [];
-
         if(number < 0) return [0, 0, 0, 0];
 
         return [
@@ -32,10 +30,8 @@ export class Encode
         return (bytes[0] * 256) + (bytes[1]);
     }
     
-    static encodeInt16(number: number): Array<number>
+    static encodeInt16(number: number): number[]
     {
-        let bytes: Array<number> = [];
-
         if(number < 0) return [0, 0];
 
         return [
@@ -56,7 +52,7 @@ export class Encode
         return flag ? 1 : 0;
     }
 
-    static stringToBytes(string: string): Array<any>
+    static stringToBytes(string: string): any[]
     {
         if(string.length == 0) return [];
 

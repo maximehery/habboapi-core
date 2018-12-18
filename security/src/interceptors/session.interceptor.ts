@@ -11,7 +11,11 @@ export class SessionInterceptor implements NestInterceptor
 
         return call$.pipe(map(res =>
         {
-            if(typeof res === 'object' && req.path != '/config.json' && req.user) res.session = req.user;
+            if(req.path == '/config.json' || req.path == '/security/authentication/login') return res;
+
+            if(typeof res === 'object' && req.user) res.session = req.user;
+
+            if(res == null) res = { session: req.user };
 
             return res;
         }));

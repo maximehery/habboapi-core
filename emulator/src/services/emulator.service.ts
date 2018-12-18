@@ -19,7 +19,7 @@ export class EmulatorService implements OnModuleInit, OnModuleDestroy
         return this.gameOnline;
     }
 
-    async onModuleInit()
+    onModuleInit()
     {
         if(this.configService.config.emulator.watchEmulator) this.watch();
     }

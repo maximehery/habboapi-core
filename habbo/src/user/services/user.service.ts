@@ -4,15 +4,13 @@ import { Repository } from 'typeorm';
 
 import { ISearchOptions, RepositoryHelper } from '@habboapi/common';
 
-import { UserEntity } from '../entities/user.entity';
-import { UserValidatorService } from './userValidator.service';
+import { UserEntity } from '../entities';
 import { IUser, IUserList } from '../interfaces';
 
 @Injectable()
 export class UserService
 {
     constructor(
-        private readonly userValidatorService: UserValidatorService,
         @InjectRepository(UserEntity)
         private readonly userRepository: Repository<UserEntity>) {}
 
@@ -21,7 +19,7 @@ export class UserService
         return await RepositoryHelper.search(this.userRepository, searchOptions || null);
     }
 
-    async getOne(itemId: number, relations?: Array<string>): Promise<IUser>
+    async getOne(itemId: number, relations?: string[]): Promise<IUser>
     {
         if(!itemId) return Promise.reject('invalid_parameters');
 

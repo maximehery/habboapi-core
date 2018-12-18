@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { ISearchOptions, RepositoryHelper, TimeHelper } from '@habboapi/common';
 
-import { BanEntity } from '../entities/ban.entity';
+import { BanEntity } from '../entities';
 import { IBan, IBanList } from '../interfaces';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class BanService
         return await RepositoryHelper.search(this.banRepository, searchOptions || null);
     }
 
-    async getOne(banId: number, relations?: Array<string>): Promise<IBan>
+    async getOne(banId: number, relations?: string[]): Promise<IBan>
     {
         if(!banId) return Promise.reject('invalid_parameters');
 
@@ -35,12 +35,12 @@ export class BanService
 
         const add: IBan = {
             id: null,
-            userId: ban.userId || 0,
+            userId: +ban.userId || 0,
             ip: ban.ip || '',
             machineId: ban.machineId || '',
-            userStaffId: staffId || 0,
-            timestamp: TimeHelper.timestampNow(),
-            banExpire: TimeHelper.addToTimestampNow(ban.banExpire),
+            userStaffId: +staffId || 0,
+            timestamp: +TimeHelper.timestampNow(),
+            banExpire: +TimeHelper.addToTimestampNow(ban.banExpire),
             banReason: ban.banReason || '',
             type: ban.type || 'account',
             cfhTopic: 0
@@ -61,12 +61,12 @@ export class BanService
 
         const update: IBan = {
             id: +banId,
-            userId: ban.userId || result.userId,
+            userId: +ban.userId || result.userId,
             ip: ban.ip || result.ip,
             machineId: ban.machineId || result.machineId,
-            userStaffId: result.userStaffId,
-            timestamp: result.timestamp,
-            banExpire: TimeHelper.addToTimestampNow(ban.banExpire),
+            userStaffId: +result.userStaffId,
+            timestamp: +result.timestamp,
+            banExpire: +TimeHelper.addToTimestampNow(ban.banExpire),
             banReason: ban.banReason || '',
             type: ban.type || 'account',
             cfhTopic: 0

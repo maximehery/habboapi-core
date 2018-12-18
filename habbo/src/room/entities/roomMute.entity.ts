@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 't
 
 import { RoomEntity } from './room.entity';
 
-import { UserEntity } from '../../user/entities/user.entity';
+import { UserEntity } from '../../user';
 
 @Entity('room_mute')
 export class RoomMuteEntity

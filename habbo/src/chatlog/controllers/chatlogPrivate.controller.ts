@@ -1,10 +1,11 @@
 import { Controller, UseGuards, Get, Post, Delete, Param, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
+import { ISearchOptions } from '@habboapi/common';
+import { Permission } from '@habboapi/security/decorators';
 import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
-import { Permission } from '@habboapi/security/decorators/permission.decorator';
 
-import { ChatlogPrivateService } from '../services/chatlogPrivate.service';
 import { IChatlogPrivate, IChatlogPrivateList } from '../interfaces';
+import { ChatlogPrivateService } from '../services';
 
 @Controller('private')
 @UseGuards(PermissionGuard)
@@ -15,7 +16,7 @@ export class ChatlogPrivateController
     @Get('all/:page?/:relations?')
     @HttpCode(HttpStatus.OK)
     @Permission('chatlog')
-    async getAll(@Param() params): Promise<IChatlogPrivateList>
+    async getAll(@Param() params: { page?: number, relations?: string }): Promise<IChatlogPrivateList>
     {
         try
         {
@@ -24,7 +25,7 @@ export class ChatlogPrivateController
                 relations: params.relations ? params.relations.split(',') : null
             });
 
-            if(!result.pagination.totalItems) throw new Error('no_results');
+            if(!result || !result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }
@@ -38,7 +39,7 @@ export class ChatlogPrivateController
     @Get('backup')
     @HttpCode(HttpStatus.OK)
     @Permission('chatlog', 'chatlogBackup')
-    async backup(@Param() params): Promise<any>
+    async backup(): Promise<any>
     {
         try
         {
@@ -56,7 +57,7 @@ export class ChatlogPrivateController
     @Get(':chatlogId/:relations?')
     @HttpCode(HttpStatus.OK)
     @Permission('chatlog')
-    async getOne(@Param() params): Promise<IChatlogPrivate>
+    async getOne(@Param() params: { chatlogId: number, relations?: string }): Promise<IChatlogPrivate>
     {
         try
         {
@@ -76,13 +77,13 @@ export class ChatlogPrivateController
     @Post('search')
     @HttpCode(HttpStatus.OK)
     @Permission('chatlog')
-    async searchAll(@Body() body): Promise<IChatlogPrivateList>
+    async searchAll(@Body() body: { searchOptions: ISearchOptions }): Promise<IChatlogPrivateList>
     {
         try
         {
-            const result = await this.chatlogPrivateService.getAll(body.searchOptions);
+            const result = await this.chatlogPrivateService.getAll(body.searchOptions || null);
 
-            if(!result.pagination.totalItems) throw new Error('no_results');
+            if(!result || !result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }
@@ -96,7 +97,7 @@ export class ChatlogPrivateController
     @Delete(':chatlogId')
     @HttpCode(HttpStatus.OK)
     @Permission('chatlog', 'catalogDelete')
-    async delete(@Param() params): Promise<any>
+    async delete(@Param() params: { chatlogId: number }): Promise<any>
     {
         try
         {

@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { UserEntity } from '../entities/user.entity';
+import { UserEntity } from '../entities';
 
 @Injectable()
 export class UserValidatorService
@@ -13,7 +13,7 @@ export class UserValidatorService
 
     async validateUsername(username: string): Promise<boolean>
     {
-        let regex = new RegExp(/^[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]{1,20}$/g);
+        const regex = new RegExp(/^[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]{1,20}$/g);
 
         if(!username || !regex.test(username)) return Promise.reject('invalid_parameters');
 
@@ -24,12 +24,12 @@ export class UserValidatorService
 
         if(result) return Promise.reject('username_unavailable');
 
-        return true;
+        return Promise.resolve(true);
     }
 
     async validateEmail(email: string): Promise<boolean>
     {
-        let regex = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/g);
+        const regex = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/g);
 
         if(!email || !regex.test(email)) return Promise.reject('invalid_parameters');
 
@@ -40,6 +40,6 @@ export class UserValidatorService
 
         if(result) return Promise.reject('email_unavailable');
         
-        return true;
+        return Promise.resolve(true);
     }
 }

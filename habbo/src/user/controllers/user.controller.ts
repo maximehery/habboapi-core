@@ -1,10 +1,11 @@
 import { Controller, UseGuards, Get, Post, Param, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
+import { ISearchOptions } from '@habboapi/common';
+import { Permission } from '@habboapi/security/decorators';
 import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
-import { Permission } from '@habboapi/security/decorators/permission.decorator';
 
-import { UserService } from '../services/user.service';
 import { IUser, IUserList } from '../interfaces';
+import { UserService } from '../services';
 
 @Controller()
 @UseGuards(PermissionGuard)
@@ -15,7 +16,7 @@ export class UserController
     @Get('all/:page?/:relations?')
     @HttpCode(HttpStatus.OK)
     @Permission('user')
-    async getAll(@Param() params): Promise<IUserList>
+    async getAll(@Param() params: { page?: number, relations?: string }): Promise<IUserList>
     {
         try
         {
@@ -24,7 +25,7 @@ export class UserController
                 relations: params.relations ? params.relations.split(',') : null
             });
 
-            if(!result.pagination.totalItems) throw new Error('no_results');
+            if(!result || !result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }
@@ -38,7 +39,7 @@ export class UserController
     @Get(':userId/:relations?')
     @HttpCode(HttpStatus.OK)
     @Permission('user')
-    async getOne(@Param() params): Promise<IUser>
+    async getOne(@Param() params: { userId: number, relations?: string }): Promise<IUser>
     {
         try
         {
@@ -58,13 +59,13 @@ export class UserController
     @Post('search')
     @HttpCode(HttpStatus.OK)
     @Permission('user')
-    async searchAll(@Body() body): Promise<IUserList>
+    async searchAll(@Body() body: { searchOptions: ISearchOptions }): Promise<IUserList>
     {
         try
         {
-            const result = await this.userService.getAll(body.searchOptions);
+            const result = await this.userService.getAll(body.searchOptions || null);
 
-            if(!result.pagination.totalItems) throw new Error('no_results');
+            if(!result || !result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }

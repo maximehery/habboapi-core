@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
 
 import { PasswordHelper } from '@habboapi/common';
-
 import { UserService } from '@habboapi/habbo';
+
+import { ISession } from '../interfaces';
 
 import { PermissionService } from './permission.service';
 import { SessionService } from './session.service';
-
-import { ISession } from '../interfaces';
 
 @Injectable()
 export class AuthenticationService
@@ -37,7 +36,7 @@ export class AuthenticationService
         const token         = this.sessionService.createToken(payload);
         const permissions   = this.permissionService.getPermissions(payload.rank);
 
-        return {
+        return Promise.resolve({
             sessionToken: token,
             session: {
                 id: payload.id,
@@ -46,6 +45,6 @@ export class AuthenticationService
                 rank: payload.rank,
                 permissions: permissions
             }
-        };
+        });
     }
 }

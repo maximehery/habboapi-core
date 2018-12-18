@@ -1,6 +1,6 @@
 {
   "name": "@habboapi/habbo",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "Billsonnn",
   "repository": {
     "type": "git",
@@ -14,9 +14,9 @@
     "@habboapi/common": "^1.2.0",
     "@habboapi/emulator": "^1.2.0",
     "@habboapi/security": "^1.2.0",
-    "@nestjs/common": "^5.4.0",
-    "@nestjs/core": "^5.4.0",
-    "@nestjs/typeorm": "^5.2.2",
+    "@nestjs/common": "^5.5.0",
+    "@nestjs/core": "^5.5.0",
+    "@nestjs/typeorm": "^5.2.0",
     "rxjs": "^6.3.0",
     "typeorm": "0.2.8",
     "reflect-metadata": "^0.1.0"

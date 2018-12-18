@@ -1,7 +1,8 @@
 import { Controller, UseGuards, Get, Post, Patch, Put, Delete, Param, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
+import { ISearchOptions } from '@habboapi/common';
 import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
-import { Permission } from '@habboapi/security/decorators/permission.decorator';
+import { Permission } from '@habboapi/security/decorators';
 
 import { ItemBaseService } from '../services/itemBase.service';
 import { IItemBase, IItemBaseList } from '../interfaces';
@@ -15,7 +16,7 @@ export class ItemBaseController
     @Get('all/:page?/:relations?')
     @HttpCode(HttpStatus.OK)
     @Permission('item')
-    async getAll(@Param() params): Promise<IItemBaseList>
+    async getAll(@Param() params: { page?: number, relations?: string }): Promise<IItemBaseList>
     {
         try
         {
@@ -24,7 +25,7 @@ export class ItemBaseController
                 relations: params.relations ? params.relations.split(',') : null
             });
 
-            if(!result.pagination.totalItems) throw new Error('no_results');
+            if(!result || !result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }
@@ -38,7 +39,7 @@ export class ItemBaseController
     @Get(':itemBaseId/:relations?')
     @HttpCode(HttpStatus.OK)
     @Permission('item')
-    async getOne(@Param() params): Promise<IItemBase>
+    async getOne(@Param() params: { itemBaseId: number, relations?: string}): Promise<IItemBase>
     {
         try
         {
@@ -58,13 +59,13 @@ export class ItemBaseController
     @Post('search')
     @HttpCode(HttpStatus.OK)
     @Permission('item')
-    async searchAll(@Body() body): Promise<IItemBaseList>
+    async searchAll(@Body() body: { searchOptions: ISearchOptions }): Promise<IItemBaseList>
     {
         try
         {
-            const result = await this.itemBaseService.getAll(body.searchOptions);
+            const result = await this.itemBaseService.getAll(body.searchOptions || null);
 
-            if(!result.pagination.totalItems) throw new Error('no_results');
+            if(!result || !result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }
@@ -78,7 +79,7 @@ export class ItemBaseController
     @Patch(':itemBaseId')
     @HttpCode(HttpStatus.OK)
     @Permission('item', 'itemPatch')
-    async patch(@Param() params, @Body() body): Promise<IItemBase>
+    async patch(@Param() params: { itemBaseId: number }, @Body() body: { item: IItemBase }): Promise<IItemBase>
     {
         try
         {
@@ -98,7 +99,7 @@ export class ItemBaseController
     @Put()
     @HttpCode(HttpStatus.OK)
     @Permission('item', 'itemPut')
-    async add(@Body() body): Promise<IItemBase>
+    async add(@Body() body: { item: IItemBase }): Promise<IItemBase>
     {
         try
         {
@@ -118,7 +119,7 @@ export class ItemBaseController
     @Delete(':itemBaseId')
     @HttpCode(HttpStatus.OK)
     @Permission('item', 'itemDelete')
-    async delete(@Param() params): Promise<any>
+    async delete(@Param() params: { itemBaseId: number }): Promise<any>
     {
         try
         {

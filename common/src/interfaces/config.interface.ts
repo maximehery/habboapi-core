@@ -1,9 +1,15 @@
 export interface IConfig
 {
+    clusters: {
+        clustersEnabled: boolean;
+    },
     http: {
         https: boolean;
         ip: string;
         port: number;
+        cors: {
+            allowedOrigins: string[]
+        }
     },
     database: {
         type: 'mysql';
@@ -12,7 +18,7 @@ export interface IConfig
         username: string;
         password: string;
         database: string;
-        entities?: Array<string>;
+        entities?: string[];
         synchronize: boolean;
         logging?: boolean;
         logger?: 'advanced-console' | 'simple-console' | 'file' | 'debug';
@@ -34,11 +40,19 @@ export interface IConfig
             motto: string;
             credits: number;
             homeRoom: number;
-            currencies?: Array<{ type: number, amount: number}>;
+            currencies?: { type: number, amount: number}[];
         }
     },
     public: {
         name: string;
         apiUrl: string;
+        socketUrl: string;
+        images: {
+            avatars: string;
+            badges: string;
+            badgesGroup: string;
+            camera: string;
+            news: string;
+        }
     }
 }

@@ -1,3 +1,3 @@
-import { RoomEntity } from '../entities/room.entity';
+import { RoomEntity } from '../entities';
 
 export interface IRoom extends RoomEntity {}

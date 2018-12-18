@@ -48,6 +48,24 @@ export class ApiPermissionEntity
     @Column({ name: 'room', type: 'enum', enum: ['0', '1'] })
     room: '0' | '1';
 
+    @Column({ name: 'room_patch', type: 'enum', enum: ['0', '1'] })
+    roomPatch: '0' | '1';
+
+    @Column({ name: 'room_put', type: 'enum', enum: ['0', '1'] })
+    roomPut: '0' | '1';
+
+    @Column({ name: 'room_delete', type: 'enum', enum: ['0', '1'] })
+    roomDelete: '0' | '1';
+
+    @Column({ name: 'system', type: 'enum', enum: ['0', '1'] })
+    system: '0' | '1';
+
+    @Column({ name: 'system_search', type: 'enum', enum: ['0', '1'] })
+    systemSearch: '0' | '1';
+
+    @Column({ name: 'system_statistics', type: 'enum', enum: ['0', '1'] })
+    systemStatistics: '0' | '1';
+
     @Column({ name: 'user', type: 'enum', enum: ['0', '1'] })
     user: '0' | '1';
 

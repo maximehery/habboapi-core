@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { ISearchOptions, RepositoryHelper } from '@habboapi/common';
 
-import { RoomEntity } from '../entities/room.entity';
+import { RoomEntity } from '../entities';
 import { IRoom, IRoomList } from '../interfaces';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class RoomService
         return await RepositoryHelper.search(this.roomRepository, searchOptions || null);
     }
 
-    async getOne(roomId: number, relations?: Array<string>): Promise<IRoom>
+    async getOne(roomId: number, relations?: string[]): Promise<IRoom>
     {
         if(!roomId) return Promise.reject('invalid_parameters');
 

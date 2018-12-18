@@ -1,8 +1,8 @@
 export const enum IRconResponseStatus
 {
-    statusOk        = 0,
-    statusError     = 1,
-    habboNotFound   = 2,
-    roomNotFound    = 3,
-    systemError     = 4
+    STATUS_OK       = 0,
+    STATUS_ERROR    = 1,
+    HABBO_NOT_FOUND = 2,
+    ROOM_NOT_FOUND  = 3,
+    SYSTEM_ERROR    = 4
 }

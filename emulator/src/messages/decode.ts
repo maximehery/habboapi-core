@@ -8,7 +8,7 @@ export class Decode
     public _strlen: number;
     public _bool: number;
 
-    public str: Array<any>;
+    public str: any[];
 
     constructor(packet: Buffer)
     {

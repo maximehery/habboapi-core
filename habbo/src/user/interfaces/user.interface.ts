@@ -1,3 +1,3 @@
-import { UserEntity } from '../entities/user.entity';
+import { UserEntity } from '../entities';
 
 export interface IUser extends UserEntity {}

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { UserCurrencyEntity } from '../entities/userCurrency.entity';
+import { UserCurrencyEntity } from '../entities';
 
 @Injectable()
 export class UserCurrencyService
@@ -11,7 +11,7 @@ export class UserCurrencyService
         @InjectRepository(UserCurrencyEntity)
         private readonly userCurrencyRepository: Repository<UserCurrencyEntity>) {}
         
-    async modifyCurrency(userIds: Array<number>, type: number, amount: number): Promise<boolean>
+    async modifyCurrency(userIds: number[], type: number, amount: number): Promise<boolean>
     {
         if(!userIds || !type || !amount) return Promise.reject('invalid_parameters');
 
@@ -36,7 +36,7 @@ export class UserCurrencyService
             
             if(findCurrency) await this.userCurrencyRepository.save({
                 id: findCurrency.id,
-                amount: findCurrency.amount + amount
+                amount: +findCurrency.amount + amount
             });
             
             else await this.userCurrencyRepository.save(value);

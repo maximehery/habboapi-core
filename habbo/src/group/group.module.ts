@@ -7,9 +7,23 @@ import { GroupService, GroupMemberService } from './services';
 
 @Global()
 @Module({
-    imports: [ TypeOrmModule.forFeature([ GroupEntity, GroupMemberEntity]) ],
-    controllers: [ GroupController, GroupMemberController ],
-    exports: [ GroupService, GroupMemberService ],
-    providers: [ GroupService, GroupMemberService ]
+    imports: [
+        TypeOrmModule.forFeature([
+            GroupEntity,
+            GroupMemberEntity
+        ])
+    ],
+    controllers: [
+        GroupController,
+        GroupMemberController
+    ],
+    exports: [
+        GroupService,
+        GroupMemberService
+    ],
+    providers: [
+        GroupService,
+        GroupMemberService
+    ]
 })
 export class GroupModule {}

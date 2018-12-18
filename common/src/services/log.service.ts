@@ -55,7 +55,7 @@ export class LogService implements LoggerService
         output = output == 'Nest application successfully started' ? 'HabboAPI Started' : output;
         context = context == 'RoutesResolver' || context == 'RouterExplorer' ? 'Router' : context == 'NestApplication' || !context ? 'HabboAPI' : context;
         
-        process.stdout.write(` ${ color(`[HabboAPI]`) } ${ moment().format('M/D/YY h:mm:ss A') } `);
+        process.stdout.write(` ${ color(`[HabboAPI] [${ process.pid }]`) } ${ moment().format('M/D/YY h:mm:ss A') } `);
         context && process.stdout.write(clc.cyan(`[${ context }] `));
         process.stdout.write(color(output));
         

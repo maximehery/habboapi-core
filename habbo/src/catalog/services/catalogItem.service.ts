@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { ISearchOptions, RepositoryHelper } from '@habboapi/common';
 
-import { CatalogItemEntity } from '../entities/catalogItem.entity';
+import { CatalogItemEntity } from '../entities';
 import { ICatalogItem, ICatalogItemList } from '../interfaces';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class CatalogItemService
         return await RepositoryHelper.search(this.catalogItemRepository, searchOptions || null);
     }
 
-    async getOne(itemId: number, relations?: Array<string>): Promise<ICatalogItem>
+    async getOne(itemId: number, relations?: string[]): Promise<ICatalogItem>
     {
         if(!itemId) return Promise.reject('invalid_parameters');
 
@@ -35,21 +35,21 @@ export class CatalogItemService
 
         const add: ICatalogItem = {
             id: null,
-            pageId: item.pageId || 0,
+            pageId: +item.pageId || 0,
             itemIds: item.itemIds || 0,
             catalogName: item.catalogName || null,
-            costCredits: item.costCredits || 0,
-            costPoints: item.costPoints || 0,
-            pointsType: item.pointsType || 0,
-            amount: item.amount || 1,
-            songId: item.songId || 0,
-            limitedStack: item.limitedStack || 0,
+            costCredits: +item.costCredits || 0,
+            costPoints: +item.costPoints || 0,
+            pointsType: +item.pointsType || 0,
+            amount: +item.amount || 1,
+            songId: +item.songId || 0,
+            limitedStack: +item.limitedStack || 0,
             limitedSells: 0,
             extraData: item.extraData || '',
             clubOnly: item.clubOnly || '0',
             haveOffer: item.haveOffer || '1',
-            offerId: item.offerId || 0,
-            orderNum: item.orderNum || 0
+            offerId: +item.offerId || 0,
+            orderNum: +item.orderNum || 0
         };
 
         if(!add.pageId || !add.itemIds || !add.catalogName) return Promise.reject('invalid_item');
@@ -67,21 +67,21 @@ export class CatalogItemService
 
         const update: ICatalogItem = {
             id: +itemId,
-            pageId: item.pageId || result.pageId,
+            pageId: +item.pageId || result.pageId,
             itemIds: item.itemIds || result.itemIds,
             catalogName: item.catalogName || result.catalogName,
-            costCredits: item.costCredits || result.costCredits,
-            costPoints: item.costPoints || result.costPoints,
-            pointsType: item.pointsType || result.pointsType,
-            amount: item.amount || result.amount,
-            songId: item.songId || result.songId,
-            limitedStack: item.limitedStack || result.limitedStack,
-            limitedSells: result.limitedSells,
+            costCredits: +item.costCredits || result.costCredits,
+            costPoints: +item.costPoints || result.costPoints,
+            pointsType: +item.pointsType || result.pointsType,
+            amount: +item.amount || result.amount,
+            songId: +item.songId || result.songId,
+            limitedStack: +item.limitedStack || result.limitedStack,
+            limitedSells: +result.limitedSells,
             extraData: item.extraData || result.extraData,
             clubOnly: item.clubOnly || result.clubOnly,
             haveOffer: item.haveOffer || result.haveOffer,
-            offerId: item.offerId || result.offerId,
-            orderNum: item.orderNum || result.orderNum
+            offerId: +item.offerId || result.offerId,
+            orderNum: +item.orderNum || result.orderNum
         };
 
         if(!update.pageId || !update.itemIds || !update.catalogName) return Promise.reject('invalid_item');

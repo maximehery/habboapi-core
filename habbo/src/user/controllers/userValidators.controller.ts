@@ -1,6 +1,6 @@
-import { Controller, Get, HttpStatus, Param, HttpException } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Param, HttpCode, HttpException } from '@nestjs/common';
 
-import { UserValidatorService } from '../services/userValidator.service';
+import { UserValidatorService } from '../services';
 
 @Controller('validators')
 export class UserValidatorsController
@@ -8,13 +8,14 @@ export class UserValidatorsController
     constructor(private readonly userValidatorService: UserValidatorService) {}
 
     @Get('username/:username')
-    async validateUsername(@Param() params): Promise<any>
+    @HttpCode(HttpStatus.OK)
+    async validateUsername(@Param() params): Promise<null>
     {
         try
         {
             await this.userValidatorService.validateUsername(params.username);
 
-            return;
+            return null;
         }
 
         catch(err)
@@ -24,13 +25,14 @@ export class UserValidatorsController
     }
 
     @Get('email/:email')
-    async validateEmail(@Param() params): Promise<any>
+    @HttpCode(HttpStatus.OK)
+    async validateEmail(@Param() params): Promise<null>
     {
         try
         {
             await this.userValidatorService.validateEmail(params.email);
 
-            return;
+            return null;
         }
 
         catch(err)

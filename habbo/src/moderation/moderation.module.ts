@@ -6,8 +6,16 @@ import { BanService } from './services';
 
 @Global()
 @Module({
-    imports: [ TypeOrmModule.forFeature([ BanEntity ]) ],
-    exports: [ BanService ],
-    providers: [ BanService ]
+    imports: [
+        TypeOrmModule.forFeature([
+            BanEntity
+        ])
+    ],
+    exports: [
+        BanService
+    ],
+    providers: [
+        BanService
+    ]
 })
 export class ModerationModule {}

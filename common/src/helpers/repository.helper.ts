@@ -1,4 +1,5 @@
 import { Repository, Equal, Like } from 'typeorm';
+
 import { ISearchOptions } from '../interfaces';
 
 export class RepositoryHelper
@@ -6,11 +7,11 @@ export class RepositoryHelper
     static async search(repository: Repository<any>, searchOptions?: ISearchOptions)
     {
         const search = {
-            where:      searchOptions.where || null,
-            order:      searchOptions.order || null,
-            limit:      searchOptions.limit && searchOptions.limit >= 20 ? +searchOptions.limit : 20,
-            page:       +searchOptions.page || 1,
-            relations:  searchOptions.relations
+            where:      searchOptions && searchOptions.where || null,
+            order:      searchOptions && searchOptions.order || null,
+            limit:      searchOptions && searchOptions.limit && searchOptions.limit <= 20 ? +searchOptions.limit : 20,
+            page:       searchOptions && +searchOptions.page || 1,
+            relations:  searchOptions && searchOptions.relations
         };
 
         let searchWhereOptions = {};
@@ -26,8 +27,9 @@ export class RepositoryHelper
 
                 if(!columnMetadata) throw new Error('invalid_search_column');
 
-                if(where.operator == 'equals') searchWhereOptions[columnMetadata.propertyName]       = Equal(where.value);
-                else if(where.operator == 'like') searchWhereOptions[columnMetadata.propertyName]    = Like(`%${where.value}%`);
+                if(where.operator == 'equals') searchWhereOptions[columnMetadata.propertyName]          = Equal(where.value);
+                else if(where.operator == 'like') searchWhereOptions[columnMetadata.propertyName]       = Like(`%${where.value}%`);
+                else if(where.operator == 'startsWith') searchWhereOptions[columnMetadata.propertyName] = Like(`${where.value}%`);
                 else throw new Error('invalid_search_operator');
 
                 return;
@@ -39,7 +41,7 @@ export class RepositoryHelper
             search.order.forEach(order =>
             {
                 if(!order.column || !order.sort) throw new Error('invalid_order');
-                
+
                 const columnMetadata = repository.metadata.columns.find(column => column.propertyName == order.column && column.isSelect == true);
 
                 if(!columnMetadata) throw new Error('invalid_order_column');
@@ -72,5 +74,14 @@ export class RepositoryHelper
                 totalItems: totalItems
             }
         };
+    }
+
+    static async random(repository: Repository<any>, limit?: number)
+    {
+        return await repository
+            .createQueryBuilder()
+            .orderBy('RAND()')
+            .limit(limit || 10)
+            .getMany();
     }
 }

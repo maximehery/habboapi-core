@@ -1,4 +1,4 @@
-import { Module, Global } from '@nestjs/common';
+import { Module, Global, OnModuleInit } from '@nestjs/common';
 
 import { LogService } from '@habboapi/common';
 
@@ -10,10 +10,6 @@ import { ModerationModule } from './moderation';
 import { RoomModule } from './room';
 import { SystemModule } from './system';
 import { UserModule } from './user';
-
-const packageInfo = require(__dirname + '/package.json');
-
-LogService.log(`Initializing ${packageInfo.name}@${packageInfo.version}`, 'HabboModule');
 
 @Global()
 @Module({
@@ -28,4 +24,12 @@ LogService.log(`Initializing ${packageInfo.name}@${packageInfo.version}`, 'Habbo
         UserModule
     ]
 })
-export class HabboModule {}
+export class HabboModule implements OnModuleInit
+{
+    onModuleInit()
+    {
+        const packageInfo = require(__dirname + '/package.json');
+
+        LogService.log(`${ packageInfo.name }@${ packageInfo.version } initialized`, 'HabboModule');
+    }
+}

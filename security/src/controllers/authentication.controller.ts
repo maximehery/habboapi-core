@@ -1,7 +1,7 @@
 import { Controller, Post, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
-import { AuthenticationService } from '../services/authentication.service';
 import { ISession } from '../interfaces';
+import { AuthenticationService } from '../services';
 
 @Controller('authentication')
 export class AuthenticationController
@@ -16,7 +16,7 @@ export class AuthenticationController
         {
             const session = await this.authenticationService.login(body.username, body.password);
 
-            if(!session) throw new HttpException('invalid_login', HttpStatus.BAD_REQUEST);
+            if(!session) throw new Error('invalid_login');
 
             return session;
         }

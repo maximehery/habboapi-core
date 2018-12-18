@@ -1,0 +1,28 @@
+{
+  "name": "@habboapi/realtime",
+  "version": "1.2.1",
+  "author": "Billsonnn",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/billsonnn/habboapi-core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/billsonnn/habboapi-core/issues"
+  },
+  "homepage": "https://github.com/billsonnn/habboapi-core",
+  "peerDependencies": {
+    "@nestjs/common": "^5.5.0",
+    "@nestjs/core": "^5.5.0",
+    "rxjs": "^6.3.0",
+    "reflect-metadata": "^0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.0",
+    "@types/socket.io": "^2.1.2",
+    "@types/ws": "^6.0.1",
+    "typescript": "^3.1.0"
+  },
+  "dependencies": {
+    "@nestjs/websockets": "^5.5.0"
+  }
+}

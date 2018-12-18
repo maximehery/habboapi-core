@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { ISearchOptions, RepositoryHelper, BackupService } from '@habboapi/common';
 
-import { ChatlogPrivateEntity } from '../entities/chatlogPrivate.entity';
+import { ChatlogPrivateEntity } from '../entities';
 import { IChatlogPrivate, IChatlogPrivateList } from '../interfaces';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class ChatlogPrivateService
         return await RepositoryHelper.search(this.chatlogPrivateRepository, searchOptions || null);
     }
 
-    async getOne(chatlogId: number, relations?: Array<string>): Promise<IChatlogPrivate>
+    async getOne(chatlogId: number, relations?: string[]): Promise<IChatlogPrivate>
     {
         if(!chatlogId) return Promise.reject('invalid_parameters');
 

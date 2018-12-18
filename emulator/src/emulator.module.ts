@@ -1,16 +1,26 @@
-import { Global, Module } from '@nestjs/common';
+import { Global, Module, OnModuleInit } from '@nestjs/common';
 
 import { LogService } from '@habboapi/common';
 
 import { EmulatorService, RconService } from './services';
 
-const packageInfo = require(__dirname + '/package.json');
-
-LogService.log(`Initializing ${packageInfo.name}@${packageInfo.version}`, 'EmulatorModule');
-
 @Global()
 @Module({
-    providers: [ EmulatorService, RconService ],
-    exports: [ EmulatorService, RconService ]
+    providers: [
+        EmulatorService,
+        RconService
+    ],
+    exports: [
+        EmulatorService,
+        RconService
+    ]
 })
-export class EmulatorModule {}
+export class EmulatorModule implements OnModuleInit
+{
+    onModuleInit()
+    {
+        const packageInfo = require(__dirname + '/package.json');
+        
+        LogService.log(`${ packageInfo.name }@${ packageInfo.version } initialized`, 'EmulatorModule');
+    }
+}

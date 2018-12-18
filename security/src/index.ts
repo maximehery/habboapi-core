@@ -1,6 +1,7 @@
 export * from './controllers';
 export * from './decorators';
 export * from './entities';
+export * from './filters';
 export * from './guards';
 export * from './interceptors';
 export * from './interfaces';

@@ -7,9 +7,23 @@ import { CatalogItemService, CatalogPageService } from './services';
 
 @Global()
 @Module({
-    imports: [ TypeOrmModule.forFeature([ CatalogItemEntity, CatalogItemLimitedEntity, CatalogPageEntity ]) ],
-    controllers: [ CatalogItemController, CatalogPageController ],
-    exports: [ CatalogItemService, CatalogPageService ],
-    providers: [ CatalogItemService, CatalogPageService ]
+    imports: [
+        TypeOrmModule.forFeature([
+            CatalogItemEntity,
+            CatalogItemLimitedEntity,
+            CatalogPageEntity
+        ])
+    ],
+    controllers: [
+        CatalogItemController,
+        CatalogPageController
+    ],
+    exports: [
+        CatalogItemService,
+        CatalogPageService
+    ],
+    providers: [
+        CatalogItemService,
+        CatalogPageService ]
 })
 export class CatalogModule {}

@@ -1,3 +1,3 @@
-import { GroupMemberEntity } from '../entities/groupMember.entity';
+import { GroupMemberEntity } from '../entities';
 
 export interface IGroupMember extends GroupMemberEntity {}

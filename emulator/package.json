@@ -1,6 +1,6 @@
 {
   "name": "@habboapi/emulator",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "Billsonnn",
   "repository": {
     "type": "git",
@@ -12,8 +12,8 @@
   "homepage": "https://github.com/billsonnn/habboapi-core",
   "peerDependencies": {
     "@habboapi/common": "^1.2.0",
-    "@nestjs/common": "^5.4.0",
-    "@nestjs/core": "^5.4.0",
+    "@nestjs/common": "^5.5.0",
+    "@nestjs/core": "^5.5.0",
     "@nestjs/typeorm": "^5.2.0",
     "rxjs": "^6.3.0",
     "typeorm": "0.2.8",

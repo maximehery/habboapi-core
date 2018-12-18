@@ -1,11 +1,11 @@
 import { Controller, UseGuards, Get, Post, Patch, Put, Delete, Param, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
+import { ISearchOptions } from '@habboapi/common';
+import { Permission } from '@habboapi/security/decorators';
 import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
-import { Permission } from '@habboapi/security/decorators/permission.decorator';
-
-import { CatalogPageService } from '../services/catalogPage.service';
 
 import { ICatalogPage, ICatalogPageList } from '../interfaces';
+import { CatalogPageService } from '../services';
 
 @Controller('page')
 @UseGuards(PermissionGuard)
@@ -16,7 +16,7 @@ export class CatalogPageController
     @Get('all/:page?/:relations?')
     @HttpCode(HttpStatus.OK)
     @Permission('catalog')
-    async getAll(@Param() params): Promise<ICatalogPageList>
+    async getAll(@Param() params: { page?: number, relations?: string }): Promise<ICatalogPageList>
     {
         try
         {
@@ -25,7 +25,7 @@ export class CatalogPageController
                 relations: params.relations ? params.relations.split(',') : null
             });
 
-            if(!result.pagination.totalItems) throw new Error('no_results');
+            if(!result || !result.pagination.totalItems) throw new Error('no_results');
 
             return result;
         }
@@ -39,7 +39,7 @@ export class CatalogPageController
     @Get(':pageId/:relations?')
     @HttpCode(HttpStatus.OK)
     @Permission('catalog')
-    async getOne(@Param() params): Promise<ICatalogPage>
+    async getOne(@Param() params: { pageId: number, relations?: string }): Promise<ICatalogPage>
     {
         try
         {
@@ -59,13 +59,13 @@ export class CatalogPageController
     @Post('search')
     @HttpCode(HttpStatus.OK)
     @Permission('catalog')
-    async searchAll(@Body() body): Promise<ICatalogPageList>
+    async searchAll(@Body() body: { searchOptions: ISearchOptions }): Promise<ICatalogPageList>
     {
         try
         {
-            const result = await this.catalogPageService.getAll(body.searchOptions);
+            const result = await this.catalogPageService.getAll(body.searchOptions || null);
 
-            if(!result.pagination.totalItems) throw new Error('no_results');
+            if(!result || !result.pagination.totalItems) throw new Error('no_results'); 
 
             return result;
         }
@@ -79,7 +79,7 @@ export class CatalogPageController
     @Patch(':pageId')
     @HttpCode(HttpStatus.OK)
     @Permission('catalog', 'catalogPatch')
-    async patch(@Param() params, @Body() body): Promise<ICatalogPage>
+    async patch(@Param() params: { pageId: number }, @Body() body: { page: ICatalogPage }): Promise<ICatalogPage>
     {
         try
         {
@@ -99,7 +99,7 @@ export class CatalogPageController
     @Put()
     @HttpCode(HttpStatus.OK)
     @Permission('catalog', 'catalogPut')
-    async add(@Body() body): Promise<ICatalogPage>
+    async add(@Body() body: { page: ICatalogPage }): Promise<ICatalogPage>
     {
         try
         {

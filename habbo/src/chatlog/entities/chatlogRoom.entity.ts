@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 
-import { RoomEntity } from '../../room/entities/room.entity';
-import { UserEntity } from '../../user/entities/user.entity';
+import { RoomEntity } from '../../room';
+import { UserEntity } from '../../user';
 
 @Entity('chatlogs_room')
 export class ChatlogRoomEntity

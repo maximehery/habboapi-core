@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 
-import { UserEntity } from '../../user/entities/user.entity';
+import { UserEntity } from '../../user';
 
 @Entity('bans')
 export class BanEntity

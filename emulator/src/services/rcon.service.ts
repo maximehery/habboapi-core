@@ -3,6 +3,7 @@ import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { Socket } from 'net';
 
 import { ConfigService, LogService } from '@habboapi/common';
+
 import { IRconResponse } from '../interfaces';
 
 @Injectable()

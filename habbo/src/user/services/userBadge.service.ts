@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In, DeleteResult } from 'typeorm';
+import { Repository, In } from 'typeorm';
 
-import { UserBadgeEntity } from '../entities/userBadge.entity';
+import { UserBadgeEntity } from '../entities';
 
 @Injectable()
 export class UserBadgeService
@@ -11,7 +11,7 @@ export class UserBadgeService
         @InjectRepository(UserBadgeEntity)
         private readonly userBadgeRepository: Repository<UserBadgeEntity>) {}
 
-    async giveBadge(userIds: Array<number>, badgeCodes: Array<string>): Promise<boolean>
+    async giveBadge(userIds: number[], badgeCodes: string[]): Promise<boolean>
     {
         if(!userIds || !badgeCodes) return Promise.reject('invalid_parameters');
 
@@ -35,10 +35,12 @@ export class UserBadgeService
         return true;
     }
 
-    async removeBadge(userIds: Array<number>, badgeCodes: Array<string>): Promise<DeleteResult>
+    async removeBadge(userIds: number[], badgeCodes: string[]): Promise<boolean>
     {
         if(!userIds || !badgeCodes) return Promise.reject('invalid_parameters');
 
-        return await this.userBadgeRepository.delete({ userId: In(userIds), badgeCode: In(badgeCodes) });
+        await this.userBadgeRepository.delete({ userId: In(userIds), badgeCode: In(badgeCodes) });
+
+        return Promise.resolve(true);
     }
 }

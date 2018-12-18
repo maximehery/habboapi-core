@@ -15,7 +15,13 @@
         "outDir": "./out-tsc"
     },
     "exclude": [
+        "common",
+        "emulator",
+        "habbo",
         "node_modules",
-        "out-tsc"
+        "out-tsc",
+        "realtime",
+        "security",
+        "setup"
     ]
 }

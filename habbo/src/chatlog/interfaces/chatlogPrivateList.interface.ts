@@ -2,7 +2,7 @@ import { IChatlogPrivate } from './chatlogPrivate.interface';
 
 export interface IChatlogPrivateList
 {
-    data: Array<IChatlogPrivate>,
+    data: IChatlogPrivate[],
     pagination: {
         currentPage: number,
         nextPage: number,

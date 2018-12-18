@@ -1,4 +1,5 @@
 import { IIncomingHeader } from '../../interfaces';
+
 import { IncomingPacket } from '../incomingPacket';
 
 export class IncomingGeneric

@@ -1,8 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
-import { ItemEntity } from '../../item/entities/item.entity';
-
-import { CatalogItemEntity } from '../../catalog/entities/catalogItem.entity';
+import { CatalogItemEntity } from '../../catalog';
+import { ItemEntity } from '../../item';
 
 @Entity('items_base')
 export class ItemBaseEntity

@@ -1,4 +1,5 @@
 import { IOutgoingHeader } from '../../interfaces';
+
 import { OutgoingPacket } from '../outgoingPacket';
 
 export class OutgoingHandshake

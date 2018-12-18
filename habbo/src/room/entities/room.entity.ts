@@ -5,8 +5,8 @@ import { RoomEntryEntity } from './roomEntry.entity';
 import { RoomMuteEntity } from './roomMute.entity';
 
 import { ChatlogRoomEntity } from '../../chatlog/entities/chatlogRoom.entity';
-import { GroupEntity } from '../../group/entities/group.entity';
-import { UserEntity } from '../../user/entities/user.entity';
+import { GroupEntity } from '../../group';
+import { UserEntity } from '../../user';
 
 @Entity('rooms')
 export class RoomEntity
@@ -17,7 +17,7 @@ export class RoomEntity
     @Column({ name: 'owner_id' })
     ownerId: number;
 
-    @Column({ name: 'owner_name', select: false })
+    @Column({ name: 'owner_name' })
     ownerName: string;
 
     @Column({ name: 'name' })
@@ -81,7 +81,7 @@ export class RoomEntity
     isStaffPicked: '0' | '1';
 
     @Column({ name: 'allow_other_pets', type: 'enum', enum: ['0', '1'], select: false })
-    allow_OtherPets: '0' | '1';
+    allowOtherPets: '0' | '1';
 
     @Column({ name: 'allow_other_pets_eat', type: 'enum', enum: ['0', '1'], select: false })
     allowOtherPetsEat: '0' | '1';

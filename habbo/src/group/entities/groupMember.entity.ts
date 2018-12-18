@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 
-import { GroupEntity } from './group.entity';
+import { UserEntity } from '../../user';
 
-import { UserEntity } from '../../user/entities/user.entity';
+import { GroupEntity } from './group.entity';
 
 @Entity('guilds_members')
 export class GroupMemberEntity

@@ -1,9 +1,9 @@
-import { Controller, UseGuards, Put, Delete, Body, HttpStatus, HttpException } from '@nestjs/common';
+import { Controller, UseGuards, Put, Delete, Body, HttpStatus, HttpCode, HttpException } from '@nestjs/common';
 
+import { Permission } from '@habboapi/security/decorators';
 import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
-import { Permission } from '@habboapi/security/decorators/permission.decorator';
 
-import { UserBadgeService } from '../services/userBadge.service';
+import { UserBadgeService } from '../services';
 
 @Controller('badge')
 @UseGuards(PermissionGuard)
@@ -12,16 +12,17 @@ export class UserBadgeController
     constructor(private readonly userBadgeService: UserBadgeService) {}
 
     @Put()
+    @HttpCode(HttpStatus.OK)
     @Permission('userBadgePut')
-    async giveBadge(@Body() body): Promise<any>
+    async giveBadge(@Body() body): Promise<null>
     {
         try
         {
-            if(!body.userIds || !body.badgeCodes) throw new HttpException('invalid_parameters', HttpStatus.BAD_REQUEST);
+            if(!body.userIds || !body.badgeCodes) throw new Error('invalid_parameters');
 
             await this.userBadgeService.giveBadge(body.userIds, body.badgeCodes);
 
-            return;
+            return null;
         }
 
         catch(err)
@@ -31,16 +32,17 @@ export class UserBadgeController
     }
 
     @Delete()
+    @HttpCode(HttpStatus.OK)
     @Permission('userBadgeDelete')
-    async remove(@Body() body): Promise<any>
+    async remove(@Body() body): Promise<null>
     {
         try
         {
-            if(!body.userIds || !body.badgeCodes) throw new HttpException('invalid_parameters', HttpStatus.BAD_REQUEST);
+            if(!body.userIds || !body.badgeCodes) throw new Error('invalid_parameters');
 
             await this.userBadgeService.removeBadge(body.userIds, body.badgeCodes);
 
-            return;
+            return null;
         }
 
         catch(err)

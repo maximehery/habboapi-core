@@ -2,9 +2,9 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColum
 
 import { ItemBaseEntity } from './itemBase.entity';
 
-import { GroupEntity } from '../../group/entities/group.entity';
-import { RoomEntity } from '../../room/entities/room.entity';
-import { UserEntity } from '../../user/entities/user.entity';
+import { GroupEntity } from '../../group';
+import { RoomEntity } from '../../room';
+import { UserEntity } from '../../user';
 
 @Entity('items')
 export class ItemEntity

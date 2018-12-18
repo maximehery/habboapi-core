@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { ISearchOptions, RepositoryHelper } from '@habboapi/common';
 
-import { GroupMemberEntity } from '../entities/groupMember.entity';
+import { GroupMemberEntity } from '../entities';
 import { IGroupMember, IGroupMemberList } from '../interfaces';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class GroupMemberService
         return await RepositoryHelper.search(this.groupMemberRepository, searchOptions || null);
     }
 
-    async getOne(groupMembershipId: number, relations?: Array<string>): Promise<IGroupMember>
+    async getOne(groupMembershipId: number, relations?: string[]): Promise<IGroupMember>
     {
         if(!groupMembershipId) return Promise.reject('invalid_parameters');
 

@@ -1,3 +1,3 @@
-import { ChatlogPrivateEntity } from '../entities/chatlogPrivate.entity';
+import { ChatlogPrivateEntity } from '../entities';
 
 export interface IChatlogPrivate extends ChatlogPrivateEntity {}

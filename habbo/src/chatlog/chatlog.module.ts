@@ -7,9 +7,24 @@ import { ChatlogPrivateService, ChatlogRoomService } from './services';
 
 @Global()
 @Module({
-    imports: [ TypeOrmModule.forFeature([ ChatlogCommandEntity, ChatlogPrivateEntity, ChatlogRoomEntity ]) ],
-    controllers: [ ChatlogPrivateController, ChatlogRoomController ],
-    exports: [ ChatlogPrivateService, ChatlogRoomService ],
-    providers: [ ChatlogPrivateService, ChatlogRoomService ]
+    imports: [
+        TypeOrmModule.forFeature([
+            ChatlogCommandEntity,
+            ChatlogPrivateEntity,
+            ChatlogRoomEntity
+        ])
+    ],
+    controllers: [
+        ChatlogPrivateController,
+        ChatlogRoomController
+    ],
+    exports: [
+        ChatlogPrivateService,
+        ChatlogRoomService
+    ],
+    providers: [
+        ChatlogPrivateService,
+        ChatlogRoomService
+    ]
 })
 export class ChatlogModule {}
