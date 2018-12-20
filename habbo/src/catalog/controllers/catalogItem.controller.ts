@@ -1,20 +1,21 @@
 import { Controller, UseGuards, Get, Post, Patch, Put, Delete, Param, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
 import { ISearchOptions } from '@habboapi/common';
-import { Permission } from '@habboapi/security/decorators';
-import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
+import { Authentication, Permission } from '@habboapi/security/decorators';
+import { AuthenticationGuard, PermissionGuard } from '@habboapi/security/guards';
 
 import { ICatalogItem, ICatalogItemList } from '../interfaces';
 import { CatalogItemService } from '../services';
 
 @Controller('item')
-@UseGuards(PermissionGuard)
+@UseGuards(AuthenticationGuard, PermissionGuard)
 export class CatalogItemController
 {
     constructor(private readonly catalogItemService: CatalogItemService) {}
 
     @Get('all/:page?/:relations?')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('catalog')
     async getAll(@Param() params: { page?: number, relations?: string }): Promise<ICatalogItemList>
     {
@@ -38,6 +39,7 @@ export class CatalogItemController
 
     @Get(':itemId/:relations?')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('catalog')
     async getOne(@Param() params: { itemId: number, relations?: string }): Promise<ICatalogItem>
     {
@@ -58,6 +60,7 @@ export class CatalogItemController
 
     @Post('search')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('catalog')
     async searchAll(@Body() body: { searchOptions: ISearchOptions }): Promise<ICatalogItemList>
     {
@@ -78,6 +81,7 @@ export class CatalogItemController
 
     @Patch(':itemId')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('catalog', 'catalogPatch')
     async patch(@Param() params: { itemId: number }, @Body() body: { item: ICatalogItem }): Promise<ICatalogItem>
     {
@@ -98,6 +102,7 @@ export class CatalogItemController
 
     @Put()
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('catalog', 'catalogPut')
     async add(@Body() body: { item: ICatalogItem }): Promise<ICatalogItem>
     {
@@ -118,6 +123,7 @@ export class CatalogItemController
 
     @Delete(':itemId')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('catalog', 'catalogDelete')
     async delete(@Param() params: { itemId: number }): Promise<null>
     {

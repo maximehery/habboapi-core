@@ -1,20 +1,22 @@
 import { Controller, UseGuards, Get, Post, Delete, Param, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
 import { ISearchOptions } from '@habboapi/common';
-import { Permission } from '@habboapi/security/decorators';
+import { Authentication, Permission } from '@habboapi/security/decorators';
+import { AuthenticationGuard } from '@habboapi/security/guards/authentication.guard';
 import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
 
 import { IChatlogPrivate, IChatlogPrivateList } from '../interfaces';
 import { ChatlogRoomService } from '../services';
 
 @Controller('room')
-@UseGuards(PermissionGuard)
+@UseGuards(AuthenticationGuard, PermissionGuard)
 export class ChatlogRoomController
 {
     constructor(private readonly chatlogRoomService: ChatlogRoomService) {}
 
     @Get('all/:page?/:relations?')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('chatlog')
     async getAll(@Param() params: { page?: number, relations?: string }): Promise<IChatlogPrivateList>
     {
@@ -38,6 +40,7 @@ export class ChatlogRoomController
 
     @Get('backup')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('chatlog', 'chatlogBackup')
     async backup(): Promise<any>
     {
@@ -56,6 +59,7 @@ export class ChatlogRoomController
 
     @Get(':chatlogId/:relations?')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('chatlog')
     async getOne(@Param() params: { chatlogId: number, relations?: string}): Promise<IChatlogPrivate>
     {
@@ -76,6 +80,7 @@ export class ChatlogRoomController
 
     @Post('search')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('chatlog')
     async searchAll(@Body() body: { searchOptions: ISearchOptions }): Promise<IChatlogPrivateList>
     {
@@ -96,6 +101,7 @@ export class ChatlogRoomController
 
     @Delete(':chatlogId')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('chatlog', 'chatlogDelete')
     async delete(@Param() params: { chatlogId: number }): Promise<any>
     {

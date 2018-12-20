@@ -1,19 +1,21 @@
 import { Controller, UseGuards, Post, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
-import { Permission } from '@habboapi/security/decorators';
+import { Authentication, Permission } from '@habboapi/security/decorators';
+import { AuthenticationGuard } from '@habboapi/security/guards/authentication.guard';
 import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
 
 import { ISystemSearch } from '../interfaces';
 import { SearchService } from '../services';
 
 @Controller()
-@UseGuards(PermissionGuard)
+@UseGuards(AuthenticationGuard, PermissionGuard)
 export class SearchController
 {
     constructor(private readonly searchService: SearchService) {}
 
     @Post('search')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('systemSearch')
     async statistics(@Body() body): Promise<ISystemSearch>
     {

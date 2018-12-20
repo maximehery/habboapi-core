@@ -1,20 +1,22 @@
 import { Controller, UseGuards, Get, Post, Param, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
 import { ISearchOptions } from '@habboapi/common';
-import { Permission } from '@habboapi/security/decorators';
+import { Authentication, Permission } from '@habboapi/security/decorators';
+import { AuthenticationGuard } from '@habboapi/security/guards/authentication.guard';
 import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
 
 import { IRoom, IRoomList } from '../interfaces';
 import { RoomService } from '../services';
 
 @Controller()
-@UseGuards(PermissionGuard)
+@UseGuards(AuthenticationGuard, PermissionGuard)
 export class RoomController
 {
     constructor(private readonly roomService: RoomService) {}
 
     @Get('all/:page?/:relations?')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('room')
     async getAll(@Param() params: { page?: number, relations?: string }): Promise<IRoomList>
     {
@@ -38,6 +40,7 @@ export class RoomController
 
     @Get(':roomId/:relations?')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('room')
     async getOne(@Param() params: { roomId: number, relations?: string }): Promise<IRoom>
     {
@@ -58,6 +61,7 @@ export class RoomController
 
     @Post('search')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('room')
     async searchAll(@Body() body: { searchOptions: ISearchOptions }): Promise<IRoomList>
     {

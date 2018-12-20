@@ -1,20 +1,22 @@
 import { Controller, UseGuards, Get, Post, Param, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
 import { ISearchOptions } from '@habboapi/common';
-import { Permission } from '@habboapi/security/decorators';
+import { Authentication, Permission } from '@habboapi/security/decorators';
+import { AuthenticationGuard } from '@habboapi/security/guards/authentication.guard';
 import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
 
 import { IUser, IUserList } from '../interfaces';
 import { UserService } from '../services';
 
 @Controller()
-@UseGuards(PermissionGuard)
+@UseGuards(AuthenticationGuard, PermissionGuard)
 export class UserController
 {
     constructor(private readonly userService: UserService) {}
 
     @Get('all/:page?/:relations?')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('user')
     async getAll(@Param() params: { page?: number, relations?: string }): Promise<IUserList>
     {
@@ -38,6 +40,7 @@ export class UserController
 
     @Get(':userId/:relations?')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('user')
     async getOne(@Param() params: { userId: number, relations?: string }): Promise<IUser>
     {
@@ -58,6 +61,7 @@ export class UserController
 
     @Post('search')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('user')
     async searchAll(@Body() body: { searchOptions: ISearchOptions }): Promise<IUserList>
     {

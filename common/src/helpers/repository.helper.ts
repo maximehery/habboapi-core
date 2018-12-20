@@ -64,7 +64,7 @@ export class RepositoryHelper
         let totalPages      = Math.ceil(+result[1] / search.limit);
         let totalItems      = +result[1];
 
-        return {
+        return Promise.resolve({
             data: result[0],
             pagination: {
                 currentPage: search.page,
@@ -73,7 +73,7 @@ export class RepositoryHelper
                 totalPages: totalPages,
                 totalItems: totalItems
             }
-        };
+        });
     }
 
     static async random(repository: Repository<any>, limit?: number)

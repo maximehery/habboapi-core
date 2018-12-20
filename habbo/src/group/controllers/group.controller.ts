@@ -1,20 +1,22 @@
 import { Controller, UseGuards, Get, Post, Param, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
 import { ISearchOptions } from '@habboapi/common';
-import { Permission } from '@habboapi/security/decorators';
+import { Authentication, Permission } from '@habboapi/security/decorators';
+import { AuthenticationGuard } from '@habboapi/security/guards/authentication.guard';
 import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
 
 import { IGroup, IGroupList } from '../interfaces';
 import { GroupService } from '../services';
 
 @Controller()
-@UseGuards(PermissionGuard)
+@UseGuards(AuthenticationGuard, PermissionGuard)
 export class GroupController
 {
     constructor(private readonly groupService: GroupService) {}
 
     @Get('all/:page?/:relations?')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('group')
     async getAll(@Param() params: { page?: number, relations?: string }): Promise<IGroupList>
     {
@@ -38,6 +40,7 @@ export class GroupController
 
     @Get('random')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('group')
     async random(): Promise<{ data: IGroup[] }>
     {
@@ -58,6 +61,7 @@ export class GroupController
 
     @Get(':groupId/:relations?')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('group')
     async getOne(@Param() params: { groupId: number, relations?: string }): Promise<IGroup>
     {
@@ -78,6 +82,7 @@ export class GroupController
 
     @Post('search')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('group')
     async searchAll(@Body() body: { searchOptions: ISearchOptions }): Promise<IGroupList>
     {

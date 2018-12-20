@@ -1,15 +1,19 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
+import { Controller, UseGuards, Post, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
+import { Authentication } from '../decorators';
+import { AuthenticationGuard } from '../guards';
 import { ISession } from '../interfaces';
 import { AuthenticationService } from '../services';
 
 @Controller('authentication')
+@UseGuards(AuthenticationGuard)
 export class AuthenticationController
 {
     constructor(private readonly authenticationService: AuthenticationService) {}
 
     @Post('login')
-    @HttpCode(200)
+    @HttpCode(HttpStatus.OK)
+    @Authentication(false)
     async login(@Body() body): Promise<{ sessionToken: string, session: ISession }>
     {
         try

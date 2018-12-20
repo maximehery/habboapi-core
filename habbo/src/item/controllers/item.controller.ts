@@ -1,20 +1,22 @@
 import { Controller, UseGuards, Get, Post, Patch, Put, Delete, Param, Body, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
 
 import { ISearchOptions } from '@habboapi/common';
+import { Authentication, Permission } from '@habboapi/security/decorators';
+import { AuthenticationGuard } from '@habboapi/security/guards/authentication.guard';
 import { PermissionGuard } from '@habboapi/security/guards/permission.guard';
-import { Permission } from '@habboapi/security/decorators';
 
 import { ItemService } from '../services/item.service';
 import { IItem, IItemList } from '../interfaces';
 
 @Controller()
-@UseGuards(PermissionGuard)
+@UseGuards(AuthenticationGuard, PermissionGuard)
 export class ItemController
 {
     constructor(private readonly itemService: ItemService) {}
 
     @Get('all/:page?/:relations?')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('item')
     async getAll(@Param() params: { page?: number, relations?: string }): Promise<IItemList>
     {
@@ -38,6 +40,7 @@ export class ItemController
 
     @Get(':itemId/:relations?')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('item')
     async getOne(@Param() params: { itemId: number, relations?: string }): Promise<IItem>
     {
@@ -58,6 +61,7 @@ export class ItemController
 
     @Post('search')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('item')
     async searchAll(@Body() body: { searchOptions: ISearchOptions }): Promise<IItemList>
     {
@@ -78,6 +82,7 @@ export class ItemController
 
     @Patch(':itemId')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('item', 'itemPatch')
     async patch(@Param() params: { itemId: number }, @Body() body: { item: IItem }): Promise<IItem>
     {
@@ -98,6 +103,7 @@ export class ItemController
 
     @Put()
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('item', 'itemPut')
     async add(@Body() body: { item: IItem }): Promise<IItem>
     {
@@ -118,6 +124,7 @@ export class ItemController
 
     @Delete(':itemId')
     @HttpCode(HttpStatus.OK)
+    @Authentication(true)
     @Permission('item', 'itemDelete')
     async delete(@Param() params: { itemId: number }): Promise<any>
     {

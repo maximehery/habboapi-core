@@ -4,7 +4,7 @@ import { RouterModule } from 'nest-router';
 import { CommonModule } from '@habboapi/common';
 import { EmulatorModule } from '@habboapi/emulator';
 import { HabboModule } from '@habboapi/habbo';
-import { SecurityModule, LoadUserMiddleware, LoadPermissionsMiddleware, AuthenticatedMiddleware } from '@habboapi/security';
+import { SecurityModule, LoadUserMiddleware, LoadPermissionsMiddleware } from '@habboapi/security';
 import { RealtimeModule } from '@habboapi/realtime';
 
 import { PluginsModule } from './plugins/plugins.module';
@@ -34,10 +34,5 @@ export class HabboAPI implements NestModule
         consumer
             .apply(LoadUserMiddleware, LoadPermissionsMiddleware)
             .forRoutes({ path: '*', method: RequestMethod.ALL })
-            .apply(AuthenticatedMiddleware)
-            .with(true)
-            .forRoutes(
-                { path: '/habbo', method: RequestMethod.ALL },
-                { path: '/security/session', method: RequestMethod.ALL });
     }
 }
